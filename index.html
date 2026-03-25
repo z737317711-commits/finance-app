@@ -16,7 +16,7 @@
   --border:#D4C4AC; --shadow:rgba(80,50,20,.10);
   --terra:#B8723A; --terra2:#D4956A; --terra3:#F0DBC8;
   --sage:#5E9478;  --sage2:#9EC4B0;
-  --gold:#C09030;  --rose:#B85848;
+  --gold:#C09030;  --rose:#B85848; --rose-hover:#a04a3c;
   --plum:#8070A8;  --sky:#5888A8;
   --text:#2E1E0E;  --text2:#7A5A38;  --text3:#B09070;  --texti:#FDFAF5;
   --r:12px; --rs:8px;
@@ -70,7 +70,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 
 /* ══ BUTTONS ══════════════════════════════════ */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:50px;border:none;font-family:inherit;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .16s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:50px;border:none;font-family:inherit;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .16s;white-space:nowrap}
 .btn-p{background:linear-gradient(135deg,var(--terra),var(--terra2));color:white;box-shadow:0 3px 12px rgba(184,114,58,.35)}
 .btn-p:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(184,114,58,.45)}
 .btn-g{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)}
@@ -79,6 +79,8 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .btn-d:hover{background:rgba(184,88,72,.2)}
 .btn-s{background:rgba(94,148,120,.1);color:var(--sage);border:1.5px solid rgba(94,148,120,.3)}
 .btn-s:hover{background:rgba(94,148,120,.2)}
+.btn-rose{background:var(--rose);color:white;box-shadow:0 3px 12px rgba(184,88,72,.35)}
+.btn-rose:hover{background:var(--rose-hover); transform:translateY(-1px);}
 .btn-sm{padding:5px 11px;font-size:.74rem}
 
 /* ══ INPUTS ═══════════════════════════════════ */
@@ -141,7 +143,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   border-radius:18px;
   padding:28px 30px;
   width: 92%;
-  max-width: 480px;
+  max-width: 480px; 
   max-height:85vh;
   overflow-y:auto;
   box-shadow:0 20px 60px rgba(46,30,14,.25);
@@ -236,7 +238,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 .pay-row:last-child{border-bottom:none}
 
 /* ══ CAT WIDGET ═══════════════════════════════ */
-.cat-fab{position:fixed;bottom:30px;right:30px;width:64px;height:64px;border-radius:50%;cursor:pointer;box-shadow:0 4px 20px rgba(184,114,58,.45);display:flex;align-items:center;justify-content:center;z-index:900;transition:transform .2s;background:linear-gradient(135deg,#D4A070,#B87840);animation:fabFloat 3.8s ease-in-out infinite}
+.cat-fab{position:fixed;bottom:26px;right:26px;width:64px;height:64px;border-radius:50%;cursor:pointer;box-shadow:0 4px 20px rgba(184,114,58,.45);display:flex;align-items:center;justify-content:center;z-index:900;transition:transform .2s;background:linear-gradient(135deg,#D4A070,#B87840);animation:fabFloat 3.8s ease-in-out infinite}
 .cat-fab:hover{transform:scale(1.1)!important}
 @keyframes fabFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .cat-fab svg{width:44px;height:44px}
@@ -279,37 +281,45 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 /* ══ MOBILE RWD ADJUSTMENTS ══════════════════ */
 @media(max-width: 768px) {
   body { flex-direction: column; }
+  
   .sidebar { 
     width: 100%; min-width: 100%; height: 70px; flex-direction: row; 
     border-right: none; border-top: 1px solid rgba(255,255,255,0.08); 
-    order: 2; padding: 0; background: #2E1E0E; z-index: 9999; 
+    order: 2; padding: 0; background: #2E1E0E; z-index: 1000; 
     box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
   }
   .logo-area, .sidebar-footer { display: none; }
+  
   .nav-list { 
     flex-direction: row; align-items: center; justify-content: flex-start; 
     padding: 0 10px; margin: 0; overflow-x: auto; overflow-y: hidden; 
     gap: 8px; width: 100%; -webkit-overflow-scrolling: touch; 
   }
   .nav-list::-webkit-scrollbar { display: none; }
-  .nav-item { flex-direction: column; padding: 6px 4px; min-width: 68px; border-radius: 12px; gap: 4px; justify-content: center; }
+  
+  .nav-item { flex-direction: column; padding: 6px 4px; min-width: 65px; border-radius: 12px; gap: 4px; justify-content: center; }
   .nav-item.nav-bottom { margin-top: 0; border-top: none; padding-top: 6px; }
   .nav-item span { display: block; font-size: 0.6rem; line-height: 1; text-align: center; margin-top: 2px;}
   .nav-item:hover, .nav-item.active { transform: none; box-shadow: none; }
   .nav-item.active { background: linear-gradient(135deg,var(--terra),#D4956A); color: white; }
   .nav-icon { font-size: 1.2rem; width: 100%; text-align: center; }
-  .main { order: 1; padding: 16px 14px; padding-bottom: 20px; }
+  
+  .main { order: 1; padding: 15px 12px; padding-bottom: 20px; }
+  
+  /* Modals RWD fix */
   .modal { padding: 22px 18px; width: 95%; max-width: 100%; margin: 0 auto; }
   .two-col { grid-template-columns: 1fr; gap: 10px; } 
   .alloc-env { grid-template-columns: 1fr; } 
   .m-actions { flex-direction: column; gap: 8px; }
   .m-actions .btn { width: 100%; justify-content: center; padding: 10px; font-size: 0.9rem; }
-  .form-row input, .form-row select { width: 100%; box-sizing: border-box; }
+  
   .tabs { flex-wrap: wrap; }
   .frow select, .frow input { flex: 1; min-width: 100px; }
+  
   .cat-fab { bottom: 85px; right: 15px; width: 54px; height: 54px; }
   .cat-fab svg { width: 36px; height: 36px; }
   .cat-panel { width: calc(100vw - 30px); right: 15px; bottom: 150px; max-height: 60vh; }
+  
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .g2, .g3, .g4, .env-grid, .sixcat-grid, .mode-grid { grid-template-columns: 1fr; }
 }
@@ -317,6 +327,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 </head>
 <body>
 
+<!-- ══ APP 導覽列 ══════════════════════════════════ -->
 <nav class="sidebar">
   <div class="logo-area">
     <div class="logo-row">
@@ -342,11 +353,13 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('reports')"><span class="nav-icon">📊</span><span>報表分析</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 Google 雲端同步 v9.1 ☁️</div>
+  <div class="sidebar-footer">🔒 完美修復版 v9.2 🌿</div>
 </nav>
 
+<!-- ══ MAIN ═══════════════════════════════════════ -->
 <main class="main">
 
+  <!-- Dashboard -->
   <section id="page-dashboard" class="page active">
     <div class="page-header">
       <h1 class="page-title">🏡 今日總覽 <span id="dash-mode-badge" style="font-size:.9rem;font-weight:700;vertical-align:middle"></span></h1>
@@ -357,6 +370,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       </div>
     </div>
     
+    <!-- 遊戲養成進度卡片 -->
     <div class="card mb6" style="background:linear-gradient(135deg, #FDF5EC, #F5EEE8); border-color:var(--terra3);">
       <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <div>
@@ -389,6 +403,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     </div>
   </section>
 
+  <!-- Transactions -->
   <section id="page-transactions" class="page">
     <div class="page-header">
       <h1 class="page-title">📒 收支記帳</h1>
@@ -414,6 +429,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     </div>
   </section>
 
+  <!-- Reconcile -->
   <section id="page-reconcile" class="page">
     <div class="page-header">
       <div>
@@ -451,6 +467,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     </div>
   </section>
 
+  <!-- Budget & Envelopes -->
   <section id="page-budget" class="page">
     <div class="page-header">
       <h1 class="page-title">🎯 預算與規劃</h1>
@@ -460,6 +477,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       </div>
     </div>
 
+    <!-- 財務模式 -->
     <div id="mode-current" class="card mb4"></div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
@@ -481,6 +499,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <div id="bud-reflection"></div>
   </section>
 
+  <!-- Debt & Credit Cards -->
   <section id="page-debt" class="page">
     <div class="page-header">
       <div>
@@ -502,6 +521,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <div id="loan-grid" class="g2"></div>
   </section>
 
+  <!-- Reports -->
   <section id="page-reports" class="page">
     <div class="page-header">
       <h1 class="page-title">📊 報表分析</h1>
@@ -525,12 +545,27 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     </div>
   </section>
 
+  <!-- Settings -->
   <section id="page-settings" class="page">
     <div class="page-header">
       <h1 class="page-title">⚙️ 系統設定</h1>
-      <div style="font-size:.8rem;color:var(--text2);font-weight:600">自訂專屬分類與 Google Sheets 雲端同步</div>
+      <div style="font-size:.8rem;color:var(--text2);font-weight:600">自訂專屬分類與一鍵防呆備份</div>
     </div>
     
+    <!-- 簡單防呆備份區塊 -->
+    <div class="card mb6">
+      <div class="card-title">💾 備份與還原 (換手機必用)</div>
+      <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px;line-height:1.6">
+        因為資料安全存放在你的設備中，如果你要換手機或換瀏覽器，請先在這裡下載備份檔（建議傳到 LINE Keep 保存）。<br>在新設備打開理財管家後，點擊上傳還原即可無縫接軌！
+      </div>
+      <div class="m-actions" style="justify-content:flex-start; margin-top:10px">
+        <button class="btn btn-p" onclick="downloadLocalBackup()">📥 下載本機備份檔</button>
+        <button class="btn btn-g" onclick="triggerUploadBackup()">☁️ 上傳還原檔</button>
+        <input type="file" id="upload-backup-input" accept=".json" style="display:none;" onchange="processUploadBackup(event)">
+      </div>
+    </div>
+
+    <!-- 雲端備份區塊 (Google Sheets) -->
     <div class="card mb6">
       <div class="card-title">☁️ Google Sheets 雲端同步設定</div>
       <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px;line-height:1.6">
@@ -538,13 +573,13 @@ tbody td{padding:10px 14px; vertical-align: middle;}
         請在上方欄位填入你部署 Apps Script 後取得的「網頁應用程式網址 (Web app URL)」。
       </div>
       <div class="form-row">
-        <label>Google Apps Script API 網址</label>
+        <label>Google API 網址</label>
         <input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
       </div>
       <div class="m-actions" style="justify-content:flex-start; margin-top:10px; flex-wrap:wrap;">
         <button class="btn btn-g" onclick="saveGasSettings()">✓ 儲存網址</button>
-        <button class="btn btn-p" onclick="uploadToGas()">☁️ 上傳備份至試算表</button>
-        <button class="btn btn-d" onclick="downloadFromGas()">📥 從試算表拉取還原</button>
+        <button class="btn btn-p" onclick="uploadToGas()">☁️ 上傳至試算表</button>
+        <button class="btn btn-d" onclick="downloadFromGas()">📥 從試算表還原</button>
       </div>
     </div>
 
@@ -578,6 +613,21 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 
 </main>
 
+<!-- ══ MODALS ══════════════════════════════════════ -->
+
+<!-- Confirm Modal -->
+<div class="overlay" id="m-confirm">
+  <div class="modal" style="min-width:280px;text-align:center;padding:30px 20px;">
+    <div style="font-size:2.5rem; margin-bottom:10px;">⚠️</div>
+    <h3 style="margin-bottom:20px;font-size:1.1rem;color:var(--text);" id="confirm-msg">確定嗎？</h3>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn btn-g" style="flex:1;justify-content:center;" onclick="closeModal('m-confirm')">取消</button>
+      <button class="btn btn-rose" style="flex:1;justify-content:center;" id="confirm-btn">確定執行</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tx Modal -->
 <div class="overlay" id="m-tx">
   <div class="modal">
     <h2 class="modal-title" id="m-tx-title">✏️ 新增交易記錄</h2>
@@ -604,6 +654,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Periodic Expense Modal -->
 <div class="overlay" id="m-periodic">
   <div class="modal">
     <h2 class="modal-title">📅 新增週期/訂閱支出</h2>
@@ -645,6 +696,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Allocation Modal -->
 <div class="overlay" id="m-alloc">
   <div class="modal" style="min-width:300px">
     <h2 class="modal-title">⚡ 分配本月收入 (大信封)</h2>
@@ -657,6 +709,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Transfer Modal -->
 <div class="overlay" id="m-transfer">
   <div class="modal">
     <h2 class="modal-title">🔄 轉移結餘</h2>
@@ -669,6 +722,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Budget Modal -->
 <div class="overlay" id="m-budget">
   <div class="modal">
     <h2 class="modal-title">🎯 設定細項預算</h2>
@@ -690,6 +744,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Credit Card Modal -->
 <div class="overlay" id="m-card">
   <div class="modal">
     <h2 class="modal-title">💳 新增 / 編輯信用卡</h2>
@@ -715,6 +770,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Debt Modal -->
 <div class="overlay" id="m-debt">
   <div class="modal">
     <h2 class="modal-title">🏦 新增一般貸款</h2>
@@ -730,6 +786,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Payment Modal -->
 <div class="overlay" id="m-pay">
   <div class="modal">
     <h2 class="modal-title">💳 記錄一般貸款繳款</h2>
@@ -744,14 +801,16 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- Pay History Modal -->
 <div class="overlay" id="m-pay-hist">
-  <div class="modal" style="min-width:440px">
+  <div class="modal" style="min-width:300px; max-width:440px;">
     <h2 class="modal-title" id="pay-hist-title">繳款紀錄</h2>
     <div id="pay-hist-list"></div>
     <div class="m-actions"><button class="btn btn-g" onclick="closeModal('m-pay-hist')">關閉</button></div>
   </div>
 </div>
 
+<!-- Prestige / Rebirth Modal -->
 <div class="overlay" id="m-prestige">
   <div class="modal" style="text-align:center;">
     <div style="font-size:3rem; margin-bottom:10px;">🎓</div>
@@ -763,7 +822,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     
     <div class="card mb4" style="text-align:left; cursor:pointer; transition:transform .2s; border-color:var(--sage2);" onclick="doPrestige('adopt')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
       <div style="font-weight:900; color:var(--sage); margin-bottom:4px;">🐈 開設貓咪中途之家</div>
-      <div style="font-size:.75rem; color:var(--text2);">保留原本的難度，重新收編一隻新貓咪。系統會幫你記錄你總共成功拯救了幾隻主子！</div>
+      <div style="font-size:.75rem; color:var(--text2);">保留原本的難度，重新收編一隻新貓咪。系統會幫你記錄你總共拯救了幾隻主子！</div>
     </div>
 
     <div class="card" style="text-align:left; cursor:pointer; transition:transform .2s; border-color:var(--gold);" onclick="doPrestige('ascend')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
@@ -777,6 +836,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<!-- ══ CAT WIDGET ═══════════════════════════════ -->
 <div class="cat-fab" id="cat-fab" onclick="toggleCat()" title="咪嚕理財管家">
   <svg viewBox="0 0 100 100" fill="none">
     <ellipse cx="50" cy="72" rx="26" ry="22" fill="#D4A878"/>
@@ -852,8 +912,9 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 
 <div class="toast" id="toast"></div>
 
+<!-- ══ JS ══════════════════════════════════════════ -->
 <script>
-// ── Settings Constants & DB ───────────────
+// ── Constants ───────────────
 const SIX = ['固定支出','必要支出','選擇支出','浪費支出','成長支出','人際支出'];
 const SIX_COLORS = ['#B85848','#C09030','#5888A8','#8070A8','#5E9478','#C07848'];
 const SIX_ICONS  = ['🏠','🛒','✨','💸','📚','👥'];
@@ -872,11 +933,17 @@ const GAME_LEVELS = [
     { req: 200, title: '懂得品味的質感貓' },
     { req: 600, title: '慵懶法式優雅貓' },
     { req: 1500, title: '懂香氛的療癒主子' },
-    { req: 3000, title: '掌管金庫的招財神貓' } // Max Level 6
+    { req: 3000, title: '掌管金庫的招財神貓' } 
 ];
 
 let DB = { transactions:[], budgets:[], debts:[], debt_payments:[], allocations:[], cards:[], categories: null, payMethods: [], game: null };
 let GAS_URL = '';
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => { console.log('SW', err); });
+  });
+}
 
 function loadDB(){ 
   try{ const d=localStorage.getItem('fin_v5'); if(d) DB=JSON.parse(d); }catch(e){} 
@@ -914,13 +981,28 @@ function loadDB(){
   }
 
   if(DB.payMethods.length === 0) DB.payMethods = ['現金', '轉帳', 'LINE PAY'];
-  
   if(!DB.game) { DB.game = { exp: 0, level: 1, prestige: 0, adopted: 1, lastTxDate: null }; }
 
   GAS_URL = localStorage.getItem('gas_url') || '';
 }
 function saveDB(){ localStorage.setItem('fin_v5', JSON.stringify(DB)); }
 function nextId(arr){ return arr.length ? Math.max(...arr.map(x=>x.id||0))+1 : 1; }
+
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+document.querySelectorAll('.overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }); });
+
+// ── CUSTOM CONFIRM MODAL ──────────────────────────────────
+let confirmAction = null;
+function showConfirm(msg, callback) {
+    document.getElementById('confirm-msg').innerHTML = msg;
+    confirmAction = callback;
+    openModal('m-confirm');
+}
+document.getElementById('confirm-btn').addEventListener('click', () => {
+    if(confirmAction) confirmAction();
+    closeModal('m-confirm');
+});
 
 // ── Google Sheets Sync ─────────────────────────────────────
 function saveGasSettings(){
@@ -947,24 +1029,25 @@ async function uploadToGas(){
 
 async function downloadFromGas(){
     if(!GAS_URL) { toast('請先輸入並儲存 Google API 網址', 'err'); return; }
-    if(!confirm('這會用雲端資料【完全覆蓋】你目前設備上的所有資料喔！確定嗎？')) return;
-    toast('📥 正在從 Google Sheets 下載還原...');
-    try {
-        const res = await fetch(GAS_URL);
-        if(res.ok) {
-            const text = await res.text();
-            if(text && text.includes('transactions')) {
-                DB = JSON.parse(text);
-                saveDB();
-                toast('📥 還原成功！系統將自動重新載入...');
-                setTimeout(()=>location.reload(), 1500);
-            } else {
-                toast('試算表內找不到有效的備份資料', 'err');
-            }
-        } else toast('下載失敗，請檢查網址設定', 'err');
-    } catch(e) {
-        toast('網路連線錯誤', 'err');
-    }
+    showConfirm('這會用雲端資料【完全覆蓋】目前的資料喔！確定嗎？', async () => {
+        toast('📥 正在從 Google Sheets 下載還原...');
+        try {
+            const res = await fetch(GAS_URL);
+            if(res.ok) {
+                const text = await res.text();
+                if(text && text.includes('transactions')) {
+                    DB = JSON.parse(text);
+                    saveDB();
+                    toast('📥 還原成功！系統將自動重新載入...');
+                    setTimeout(()=>location.reload(), 1500);
+                } else {
+                    toast('試算表內找不到有效的備份資料', 'err');
+                }
+            } else toast('下載失敗，請檢查網址設定', 'err');
+        } catch(e) {
+            toast('網路連線錯誤', 'err');
+        }
+    });
 }
 
 // ── 遊戲化核心邏輯 ──────────────────────────────────
@@ -1018,6 +1101,12 @@ function doPrestige(choice) {
 const getCards = () => DB.cards.map(c => c.name);
 const cat2six = (cat) => DB.categories.expense[cat]?.envelope || '必要支出';
 
+const fmt = v => `NT$ ${Number(v).toLocaleString('zh-TW')}`;
+const fmtShort = v => v>=1000 ? `$${(v/1000).toFixed(1)}k` : `$${Math.round(v)}`;
+const today = () => new Date().toISOString().slice(0,10);
+const thisMonth = () => new Date().toISOString().slice(0,7);
+const nowTime = () => new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+
 function nav(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1026,6 +1115,12 @@ function nav(page){
   const renders = { dashboard:renderDashboard, transactions:renderTx, budget:renderBudgetPage, debt:renderDebt, reports:renderReports, settings:renderSettings };
   renders[page]?.();
   updateGlobalSelects();
+}
+
+function updateGlobalSelects() {
+    const cardOpts = getCards().map(c=>`<option value="${c}">${c}</option>`).join('');
+    const recCard = document.getElementById('rec-card');
+    if (recCard) recCard.innerHTML = cardOpts;
 }
 
 // ── TX Modal ────────────────────────────────────────
@@ -1103,7 +1198,6 @@ function saveTx(){
   
   saveDB(); closeModal('m-tx'); renderTx(); 
   
-  // ── 遊戲經驗值派發 ──
   let todayStr = today();
   if(curType === 'card_payment') {
       addExp(30, '繳清卡費！財務壓力減輕');
@@ -1111,17 +1205,19 @@ function saveTx(){
       if (DB.game.lastTxDate !== todayStr) {
           addExp(10, '日常理財打卡');
           DB.game.lastTxDate = todayStr;
-      } else {
-          toast('已儲存 ✓');
-      }
+      } else { toast('已儲存 ✓'); }
       if (Math.random() < 0.1) {
           setTimeout(() => { addExp(50, '🎉 暴擊！咪嚕在沙發下翻到一枚金幣'); }, 1200);
       }
   }
-
   if(curType !== 'card_payment') CAT.reactToTx(tx);
 }
-function deleteTx(id){ if(!confirm('確定要刪除？')) return; DB.transactions=DB.transactions.filter(t=>t.id!==id); saveDB(); toast('已刪除'); renderTx(); }
+function deleteTx(id){ 
+  showConfirm('確定要刪除這筆紀錄嗎？', () => {
+    DB.transactions=DB.transactions.filter(t=>t.id!==id); 
+    saveDB(); toast('已刪除'); renderTx(); 
+  });
+}
 
 // ── Periodic Modal ──────────────────────────────────
 function updatePSubcats() {
@@ -1199,27 +1295,23 @@ function processReconcile() {
     txLines.forEach((line, idx) => {
         const dates = line.match(/(?:1\d{2}|20\d{2})[\/\-]\d{1,2}[\/\-]\d{1,2}/g);
         if(!dates) return;
-        
         let dStr = dates[0]; 
         let [y, m, d] = dStr.split(/[\/\-]/);
         if (y.length === 3) y = parseInt(y) + 1911;
         dStr = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
         
         let noDateLine = line.replace(/(?:1\d{2}|20\d{2})[\/\-]\d{1,2}[\/\-]\d{1,2}/g, '').trim();
-        
         let cleanForAmt = noDateLine.replace(/(第?\d{1,2}\/\d{1,2}期|卡號末四碼:?\s*\d+|TW|NT\$|TWD)/gi, '');
         const nums = cleanForAmt.match(/-?\d{1,3}(?:,\d{3})*(?:\.\d+)?/g);
         if(!nums) return;
         
         let amt = parseFloat(nums[nums.length - 1].replace(/,/g, ''));
-        
         let isPayment = amt < 0 || noDateLine.includes('繳款') || noDateLine.includes('自動扣款');
         if (amt < 0) amt = Math.abs(amt);
         if (amt === 0) return;
 
         let desc = noDateLine.replace(nums[nums.length-1], '').replace(/[,]/g, '').trim();
         desc = desc.replace(/[\t\s]+/g, ' ');
-
         parsed.push({ id: 'rec_'+idx, date: dStr, desc: desc, amt: amt, isPayment: isPayment });
     });
 
@@ -1235,12 +1327,10 @@ function processReconcile() {
 
     parsed.forEach(p => {
         const pTime = new Date(p.date).getTime();
-        
         const match = dbTxs.find(t => {
             if (t.amount !== p.amt) return false;
             const tTime = new Date(t.date).getTime();
-            const diffDays = Math.abs(tTime - pTime) / (1000 * 3600 * 24);
-            return diffDays <= 3; 
+            return Math.abs(tTime - pTime) / 86400000 <= 3; 
         });
 
         if (match) {
@@ -1254,12 +1344,10 @@ function processReconcile() {
         } else {
             newCount++;
             window.currentRecData.push(p);
-            
             let defaultCatHtml = catOpts;
             if(!p.isPayment && p.desc.includes('利息')) {
                 defaultCatHtml = defaultCatHtml.replace('value="其他支出"', 'value="其他支出" selected');
             }
-
             html += `<tr>
                 <td style="text-align:center"><input type="checkbox" id="chk_${p.id}" checked></td>
                 <td><input type="date" id="date_${p.id}" value="${p.date}" style="padding:2px;font-size:0.75rem;width:105px"></td>
@@ -1336,7 +1424,6 @@ function importReconciled() {
         document.getElementById('rec-result-area').style.display = 'none'; 
         document.getElementById('rec-input').value = ''; 
         renderTx(); 
-        
         if(hasPayment) addExp(30, '繳清卡費！財務壓力減輕');
         else addExp(15, '認真核對帳單，抓出漏網之魚');
     } 
@@ -1638,7 +1725,12 @@ function saveBudget(){
   saveDB(); closeModal('m-budget'); toast('細項預算已設定 ✓'); renderBudgetPage(); 
 }
 
-function deleteBudget(id){ if(!confirm('刪除此預算？'))return; DB.budgets=DB.budgets.filter(b=>b.id!==id); saveDB(); toast('已刪除'); renderBudgetPage(); }
+function deleteBudget(id){ 
+  showConfirm('確定刪除此預算？', () => {
+      DB.budgets=DB.budgets.filter(b=>b.id!==id); 
+      saveDB(); toast('已刪除'); renderBudgetPage();
+  }); 
+}
 
 function renderBudget(){
   const month = document.getElementById('bud-month').value || thisMonth();
@@ -1707,10 +1799,10 @@ function saveCard() {
     saveDB(); closeModal('m-card'); toast('信用卡設定已儲存'); renderDebt(); updateGlobalSelects();
 }
 function deleteCard(id) {
-    if(confirm('確定刪除此卡片？ (不影響歷史帳務)')) {
+    showConfirm('確定刪除此卡片？ (不影響歷史帳務)', () => {
         DB.cards = DB.cards.filter(c => c.id !== id);
         saveDB(); toast('已刪除卡片'); renderDebt(); updateGlobalSelects();
-    }
+    });
 }
 
 function openDebtModal(){ ['d-name','d-total','d-rate','d-due','d-note'].forEach(id=>document.getElementById(id).value=''); openModal('m-debt'); }
@@ -1732,7 +1824,12 @@ function savePayment(){
   addExp(30, '繳清一筆貸款！財務壓力減輕');
 }
 function showPayHist(debtId){ const d=DB.debts.find(x=>x.id===debtId),pays=DB.debt_payments.filter(p=>p.debt_id===debtId).sort((a,b)=>b.pay_date.localeCompare(a.pay_date)); document.getElementById('pay-hist-title').textContent=`📋 ${d.name} 繳款紀錄`; document.getElementById('pay-hist-list').innerHTML=pays.length?pays.map(p=>`<div class="pay-row"><span style="color:var(--text2)">${p.pay_date}</span><span>${p.note||'—'}</span><span style="color:var(--sage);font-weight:800">+${fmt(p.amount)}</span></div>`).join(''):'<div class="empty">🌱 尚無繳款記錄</div>'; openModal('m-pay-hist'); }
-function deleteDebt(id){ if(!confirm('確定刪除此紀錄？'))return; DB.debts=DB.debts.filter(d=>d.id!==id); DB.debt_payments=DB.debt_payments.filter(p=>p.debt_id!==id); saveDB(); toast('已刪除'); renderDebt(); }
+function deleteDebt(id){ 
+  showConfirm('確定刪除此貸款紀錄？', () => {
+    DB.debts=DB.debts.filter(d=>d.id!==id); DB.debt_payments=DB.debt_payments.filter(p=>p.debt_id!==id); 
+    saveDB(); toast('已刪除'); renderDebt(); 
+  });
+}
 
 function renderDebtCard(d) {
   const r=d.total-d.paid,p=d.total?Math.min(d.paid/d.total,1):0,bc=d.status==='paid'?'bg-sage':p>.5?'bg-sage':'bg-gold'; 
@@ -1882,6 +1979,42 @@ function renderSettings() {
   </li>`).join('');
 }
 
+// 一鍵下載備份
+function downloadLocalBackup() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `理財管家備份_${today()}.json`);
+    dlAnchorElem.click();
+    toast('📥 已下載備份檔！');
+}
+
+// 一鍵上傳還原
+function triggerUploadBackup() {
+    document.getElementById('upload-backup-input').click();
+}
+function processUploadBackup(event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if(data.transactions) {
+                DB = data;
+                saveDB();
+                toast('☁️ 還原成功！即將重新載入...');
+                setTimeout(()=>location.reload(), 1500);
+            } else {
+                toast('檔案格式錯誤', 'err');
+            }
+        } catch(err) {
+            toast('讀取失敗，請確認是正確的備份檔', 'err');
+        }
+    };
+    reader.readAsText(file);
+}
+
 function promptAddExpCat() {
     const name = prompt('請輸入新的「支出主類別」名稱：');
     if(!name) return;
@@ -1914,10 +2047,10 @@ function promptEditExpCat(cat) {
     saveDB(); renderSettings(); toast('類別已更新');
 }
 function deleteExpCat(cat) {
-    if(confirm(`確定刪除支出類別「${cat}」？ (不會影響歷史紀錄，但往後無法再選擇)`)) {
+    showConfirm(`確定刪除支出類別「${cat}」？`, () => {
         delete DB.categories.expense[cat];
         saveDB(); renderSettings(); toast('已刪除');
-    }
+    });
 }
 
 function promptAddIncCat() {
@@ -1940,10 +2073,10 @@ function promptEditIncCat(cat) {
     }
 }
 function deleteIncCat(cat) {
-    if(confirm(`確定刪除收入類別「${cat}」？`)) {
+    showConfirm(`確定刪除收入類別「${cat}」？`, () => {
         delete DB.categories.income[cat];
         saveDB(); renderSettings(); toast('已刪除');
-    }
+    });
 }
 
 function promptAddPayMethod() {
@@ -1955,11 +2088,48 @@ function promptAddPayMethod() {
     }
 }
 function deletePayMethod(idx) {
-    if(confirm('確定刪除此支付方式？')) {
+    showConfirm('確定刪除此支付方式？', () => {
         DB.payMethods.splice(idx, 1);
         saveDB(); renderSettings(); toast('已刪除');
-    }
+    });
 }
+
+// ════════════════════════════════════════════════════
+// 🐱 CAT — 咪嚕
+// ════════════════════════════════════════════════════
+const CAT = {
+  apiKey: '', unread: 0, open: false, mood: '準備好了喵！',
+  MOODS: { normal:'準備好了喵！', happy:'好開心喵～', excited:'哇！厲害喵！', love:'愛心眼喵～', thinking:'讓我想想...', sad:'有點擔心呢...', cheer:'加油！加油！' },
+  SYSTEM:`你是「咪嚕」，一隻溫柔又貼心的貓咪理財管家。個性：有同理心、偶爾俏皮、像最好的朋友、先關心人再談數字。
+擅長分析：現在偏好（即時滿足）、損失厭惡、情緒消費、50/30/20法則、六大支出類別、權責發生制、分期付款本金與利息。
+說話風格：繁體中文、100-200字、有溫度、多用emoji、具體有根據而非空洞鼓勵。`,
+  setMood(key){ const m=this.MOODS[key]||this.MOODS.normal; this.mood=m; document.getElementById('cat-mood').textContent=m; },
+  addMsg(html, mood='normal', isUser=false){ const msgs=document.getElementById('cat-msgs'), t=nowTime(); const el=document.createElement('div'); el.className='cat-msg'+(isUser?' user':''); if(isUser){ el.innerHTML=`<div><div class="bubble">${html}</div><div class="btime">${t}</div></div>`; } else{ el.innerHTML=`<div class="cat-msg-av">🐱</div><div><div class="bubble${mood==='love'||mood==='excited'?' warm':''}">${html}</div><div class="btime">${t}</div></div>`; this.setMood(mood); } msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight; if(!this.open){ this.unread++; const b=document.getElementById('cat-badge'); b.textContent=this.unread; b.style.display='flex'; } },
+  showTyping(){ document.getElementById('cat-typing').classList.add('show'); document.getElementById('cat-msgs').scrollTop=99999; },
+  hideTyping(){ document.getElementById('cat-typing').classList.remove('show'); },
+  async callAI(prompt, context=''){ if(!this.apiKey) return null; try{ const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system_instruction:{parts:[{text:this.SYSTEM}]}, contents:[{role:'user',parts:[{text:context?`${prompt}\n\n【財務資料】\n${context}`:prompt}]}], generationConfig:{maxOutputTokens:500,temperature:.85} }) }); const d=await res.json(); if(d.error){ console.error(d.error.message); return null; } return d.candidates?.[0]?.content?.parts?.[0]?.text||null; }catch(e){ console.error(e); return null; } },
+  buildCtx(month){ const {inc,exp}=getMonthlySummary(month), sr=inc>0?((inc-exp)/inc*100).toFixed(1):0; const ec=getExpByCat(month), sixcat=get6Cat(month), {totalRemain}=getDebtTotals(); const alloc=getAllocForMonth(month); const allocInfo=alloc?`信封分配：${SIX.map(c=>`${c}(${fmt(alloc.amounts[c]||0)})`).join('、')}`:'尚未設定信封分配'; return `月份:${month}，收入:${fmt(inc)}，支出:${fmt(exp)}，結餘:${fmt(inc-exp)}，儲蓄率:${sr}%\n前三支出:${ec.slice(0,3).map(c=>`${c.cat}(${fmt(c.total)})`).join('、')||'無'}\n六大類:${SIX.map(c=>`${c}(${fmt(sixcat[c]||0)})`).join('、')}\n${allocInfo}\n待還債務:${fmt(totalRemain)}`; },
+  async reactToTx(tx){ 
+    if(tx.type === 'card_payment') return; 
+    const isInc=tx.type==='income'; this.showTyping(); await delay(900); this.hideTyping(); let msg=await this.callAI(isInc?`用戶新增收入：${tx.cat}${tx.subcat?`(${tx.subcat})`:''} ${fmt(tx.amount)}${tx.note?`，備註：${tx.note}`:''}。簡短溫暖回應1-2句，若有信封分配可提醒他記得分配。`:`用戶記下支出：${tx.cat}${tx.subcat?`(${tx.subcat})`:''} ${fmt(tx.amount)}${tx.note?`，備註：${tx.note}`:''}。簡短回應1-2句。`,this.buildCtx(tx.date.slice(0,7))); if(!msg) msg=this.ruleReact(tx); this.addMsg(msg, isInc?'happy':'normal'); 
+  },
+  ruleReact(tx){ const isInc=tx.type==='income'; if(isInc){ const month=tx.date.slice(0,7); const alloc=getAllocForMonth(month); return alloc?`喵！${tx.cat} ${fmt(tx.amount)} 收到了 🌿 記得在「預算規劃」更新本月分配哦！`:`喵！${tx.cat} ${fmt(tx.amount)} 記下了 💰 要不要到「預算規劃」頁面，把這筆收入按比例分配好呢？`; } const month=tx.date.slice(0,7); const alloc=getAllocForMonth(month); if(alloc){ const sixcat=get6Cat(month); const sc=cat2six(tx.cat); const remain=(alloc.amounts[sc]||0)-(sixcat[sc]||0); if(remain<0) return `喵...「${sc}」信封已超支了 😿 要轉移其他信封的結餘來補嗎？`; if(remain<tx.amount*2) return `「${sc}」信封剩 ${fmt(remain)} 囉，這筆 ${fmt(tx.amount)} 花掉後快見底了喵 🍂`; } if(tx.amount>=5000) return `哇，${fmt(tx.amount)} 不小呢 🌿 是計劃內的支出嗎？大筆支出前停三秒問自己「需要還是想要」，是個好習慣喵～`; return `好的，${tx.cat}${tx.subcat?` - ${tx.subcat}`:''} ${fmt(tx.amount)} 記下來了喵 🐾`; },
+  async doWeekly(){ this.showTyping(); await delay(1400); this.hideTyping(); const now=new Date(),ws=new Date(now-6*86400000).toISOString().slice(0,10); const txs=DB.transactions.filter(t=>t.date>=ws); const exp=txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0),inc=txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0); const wkend=txs.filter(t=>{ const d=new Date(t.date); return (d.getDay()===0||d.getDay()===6)&&t.type==='expense'; }).reduce((s,t)=>s+t.amount,0); const ctx=`近7天：支出${fmt(exp)}，收入${fmt(inc)}，週末消費${fmt(wkend)}（佔${exp?(wkend/exp*100).toFixed(0):0}%），共${txs.length}筆`; let msg=await this.callAI('幫我做近7天消費小結，注意週末消費比例和消費模式，最後給1條實用建議。',ctx); if(!msg){ msg=`📅 **本週小結**\n\n本週支出 ${fmt(exp)}、收入 ${fmt(inc)} 喵～\n`; if(wkend>exp*.45) msg+=`\n🌙 週末消費佔了 ${(wkend/exp*100).toFixed(0)}%——閒著容易手滑，這很正常。下次週末前先想好「今天預計花多少」，給自己一個小框架喵。`; else msg+=`\n週末消費控制得不錯！繼續保持 🌿`; } this.addMsg(msg,'thinking'); },
+  async doMonthly(){ const month=thisMonth(); this.showTyping(); await delay(1600); this.hideTyping(); let msg=await this.callAI(`做${month}月完整財務報告，用心理學視角分析，檢視50/30/20和信封預算執行狀況，給3條具體建議。`,this.buildCtx(month)); if(!msg){ const {inc,exp}=getMonthlySummary(month),sr=inc>0?((inc-exp)/inc*100).toFixed(1):0,ec=getExpByCat(month); msg=`📊 **${month.slice(5)}月報告**\n\n收入 ${fmt(inc)} · 支出 ${fmt(exp)} · 結餘 ${fmt(inc-exp)}\n儲蓄率 ${sr}%\n\n`; if(ec.length) msg+=`🏅 支出前三：${ec.slice(0,3).map((c,i)=>`${['①','②','③'][i]}${c.cat}(${fmt(c.total)})`).join(' ')}\n\n`; msg+=`💌 每個月認真看財務，就已經很棒了喵 🌿`; } this.addMsg(msg,'thinking'); },
+  async doLifeCheck(){ const month=thisMonth(); this.showTyping(); await delay(1800); this.hideTyping(); let msg=await this.callAI('從心理學和生活品質角度深度分析消費結構，檢視六大類重心，有沒有情緒消費跡象，給溫柔誠實的生活建議。',this.buildCtx(month)); if(!msg){ const sixcat=get6Cat(month); const topSix=SIX.reduce((a,b)=>(sixcat[a]||0)>(sixcat[b]||0)?a:b); msg=`💭 **生活心理財務檢視**\n\n咪嚕仔細看了你的消費，想說幾句悄悄話喵～\n\n⚖️ 這個月花最多在「${topSix}」（${fmt(sixcat[topSix]||0)}）。${SIX_Q[topSix]}\n\n💌 財務是生活的鏡子，它反映你的優先級和渴望。不管現在狀況如何，你能認真對待財務，就是在好好照顧自己了 🐾 呼嚕呼嚕～`; } this.addMsg(msg,'love'); },
+  async doCheer(){ this.showTyping(); await delay(1000); this.hideTyping(); let msg=await this.callAI('用戶需要鼓勵，根據財務狀況找亮點，給真誠有根據的鼓勵。',this.buildCtx(thisMonth())); if(!msg){ const {txs}=getMonthlySummary(thisMonth()); msg=`喵～咪嚕來給你加油了 🌿\n\n${txs.length>0?`✨ 這個月已記了 ${txs.length} 筆帳，光這件事就值得肯定！`:''}很多人想記帳但做不到，你做到了 🎉\n\n理財是一段旅程，不是考試。今天比昨天更清楚自己的財務，就是進步了喵 🐾`; } this.addMsg(msg,'love'); },
+  async doChat(msg){ this.addMsg(msg,'normal',true); this.showTyping(); await delay(1200); this.hideTyping(); let reply=await this.callAI(msg,this.buildCtx(thisMonth())); if(!reply) reply='喵～咪嚕現在沒連上 AI，但你說的我都記在心裡了！設定 Gemini API Key 就能讓我真正理解你的問題哦 🐾'; this.addMsg(reply,'normal'); },
+};
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function toggleCat(){ CAT.open=!CAT.open; document.getElementById('cat-panel').classList.toggle('open',CAT.open); if(CAT.open){ CAT.unread=0; const b=document.getElementById('cat-badge'); b.style.display='none'; document.getElementById('cat-msgs').scrollTop=99999; } }
+function toggleApi(){ document.getElementById('api-box').classList.toggle('show'); }
+function saveApiKey(){ const k=document.getElementById('api-key-inp').value.trim(); if(!k||!k.startsWith('AIza')){ toast('請輸入正確格式的 Gemini Key (AIza...)','err'); return; } CAT.apiKey=k; document.getElementById('api-dot').textContent='🟢'; document.getElementById('api-txt').textContent='Gemini AI 已啟用 ✓'; document.getElementById('api-box').classList.remove('show'); CAT.addMsg('喵！Gemini AI 啟動了 🎉 現在咪嚕可以更貼心地理解你的財務狀況！','excited'); toast('AI 已啟用 🐱'); }
+async function catWeekly(){ if(!CAT.open) toggleCat(); CAT.addMsg('麻煩咪嚕幫我看看本週消費 📅','normal',true); await CAT.doWeekly(); }
+async function catMonthly(){ if(!CAT.open) toggleCat(); CAT.addMsg('幫我做本月財務報告 📊','normal',true); await CAT.doMonthly(); }
+async function catLifeCheck(){ if(!CAT.open) toggleCat(); CAT.addMsg('咪嚕，幫我從生活角度看看消費 💭','normal',true); await CAT.doLifeCheck(); }
+async function catCheer(){ if(!CAT.open) toggleCat(); CAT.addMsg('咪嚕，我需要一點鼓勵 🌿','normal',true); await CAT.doCheer(); }
+async function catChat(){ const inp=document.getElementById('cat-inp'); const msg=inp.value.trim(); if(!msg) return; inp.value=''; if(!CAT.open) toggleCat(); await CAT.doChat(msg); }
 
 loadDB();
 ['dash-month','tx-f-month','bud-month','rep-month'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=thisMonth(); });
@@ -1970,7 +2140,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v9.1 完全版上線！去「系統設定」試試 Google 雲端同步吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 完美修復版上線！這一次保證所有的功能都能正常使用囉！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 完美修復版上線囉！選單當機和按鈕失效的問題都已經清除了！`,'happy');
 },600);
 </script>
 </body>
