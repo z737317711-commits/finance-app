@@ -277,22 +277,10 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 .cat-inp:focus{border-color:var(--terra)}
 .cat-send{width:34px;height:34px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--terra),var(--terra2));color:white;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(184,114,58,.4);transition:transform .14s}
 .cat-send:hover{transform:scale(1.1)}
-.api-setup{padding:8px 12px;border-top:1.5px solid var(--border)}
-.api-toggle{font-size:.71rem;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:600;background:none;border:none;font-family:inherit;padding:0}
-.api-toggle:hover{color:var(--text2)}
-.api-box{margin-top:7px;display:none}.api-box.show{display:block}
-.api-inp{width:100%;font-size:.75rem;padding:6px 10px;border-radius:var(--rs);margin-bottom:6px;}
-.api-hint{font-size:.65rem;color:var(--text3);margin-top:3px;line-height:1.5}
-.api-btns{display:flex;gap:6px;margin-top:6px}
-.api-btn{flex:1;padding:5px;border-radius:50px;border:none;font-weight:700;font-size:.74rem;cursor:pointer;font-family:inherit}
-.api-btn.cancel{background:var(--surface2);color:var(--text2)}.api-btn.cancel:hover{background:var(--surface3)}
-.api-btn.confirm{background:linear-gradient(135deg,var(--terra),var(--terra2));color:white}
-.api-btn.confirm:hover{opacity:.9}
 
 /* ══ MOBILE RWD ADJUSTMENTS ══════════════════ */
 @media(max-width: 768px) {
   body { flex-direction: column; }
-  
   .sidebar { 
     width: 100%; min-width: 100%; height: 70px; flex-direction: row; 
     border-right: none; border-top: 1px solid rgba(255,255,255,0.08); 
@@ -300,21 +288,18 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
   }
   .logo-area, .sidebar-footer { display: none; }
-  
   .nav-list { 
     flex-direction: row; align-items: center; justify-content: flex-start; 
     padding: 0 10px; margin: 0; overflow-x: auto; overflow-y: hidden; 
     gap: 8px; width: 100%; -webkit-overflow-scrolling: touch; 
   }
   .nav-list::-webkit-scrollbar { display: none; }
-  
   .nav-item { flex-direction: column; padding: 6px 4px; min-width: 65px; border-radius: 12px; gap: 4px; justify-content: center; }
   .nav-item.nav-bottom { margin-top: 0; border-top: none; padding-top: 6px; }
   .nav-item span { display: block; font-size: 0.6rem; line-height: 1; text-align: center; margin-top: 2px;}
   .nav-item:hover, .nav-item.active { transform: none; box-shadow: none; }
   .nav-item.active { background: linear-gradient(135deg,var(--terra),#D4956A); color: white; }
   .nav-icon { font-size: 1.2rem; width: 100%; text-align: center; }
-  
   .main { order: 1; padding: 15px 12px; padding-bottom: 20px; }
   
   /* Modals RWD fix */
@@ -326,11 +311,9 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   
   .tabs { flex-wrap: wrap; }
   .frow select, .frow input { flex: 1; min-width: 100px; }
-  
   .cat-fab { bottom: 85px; right: 15px; width: 54px; height: 54px; }
   .cat-fab svg { width: 36px; height: 36px; }
   .cat-panel { width: calc(100vw - 30px); right: 15px; bottom: 150px; max-height: 60vh; }
-  
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .g2, .g3, .g4, .env-grid, .sixcat-grid, .mode-grid { grid-template-columns: 1fr; }
 }
@@ -363,7 +346,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('reports')"><span class="nav-icon">📊</span><span>報表分析</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 終極修復版 v9.4 🌿</div>
+  <div class="sidebar-footer">🔒 穩固防當版 v9.5 🌿</div>
 </nav>
 
 <main class="main">
@@ -401,12 +384,12 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 
     <div class="stat-grid" id="stat-grid"></div>
     <div class="g2 mb6">
-      <div class="card"><div class="card-title">🕐 最近交易 (已排除繳卡費)</div><div id="recent-list"></div></div>
+      <div class="card"><div class="card-title">🕐 最近交易</div><div id="recent-list"></div></div>
       <div class="card"><div class="card-title">📈 近 6 個月趨勢</div><div style="position:relative;height:210px"><canvas id="trend-chart"></canvas></div></div>
     </div>
     <div class="g2">
-      <div class="card"><div class="card-title">🍰 本月支出分類</div><div style="position:relative;height:210px"><canvas id="pie-chart"></canvas></div></div>
-      <div class="card"><div class="card-title">🎯 月預算使用狀況</div><div id="bud-overview"></div></div>
+      <div class="card"><div class="card-title">🍰 本月支出分類</div><div id="dash-pie-wrap" style="position:relative;height:210px"><canvas id="pie-chart"></canvas></div></div>
+      <div class="card"><div class="card-title">🎯 月預算狀況</div><div id="bud-overview"></div></div>
     </div>
   </section>
 
@@ -537,12 +520,12 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     </div>
     <div class="card mb6"><div class="card-title">📅 本月週支出對照表</div><div class="wtbl-wrap"><table class="wtbl" id="rep-weekly"></table></div></div>
     <div class="g2 mb6">
-      <div class="card"><div class="card-title">🍩 支出分類</div><div style="position:relative;height:250px"><canvas id="rep-pie-e"></canvas></div></div>
-      <div class="card"><div class="card-title">💚 收入來源</div><div style="position:relative;height:250px"><canvas id="rep-pie-i"></canvas></div></div>
+      <div class="card"><div class="card-title">🍩 支出分類</div><div id="rep-pie-e-wrap" style="position:relative;height:250px"><canvas id="rep-pie-e"></canvas></div></div>
+      <div class="card"><div class="card-title">💚 收入來源</div><div id="rep-pie-i-wrap" style="position:relative;height:250px"><canvas id="rep-pie-i"></canvas></div></div>
     </div>
     <div class="g2">
-      <div class="card"><div class="card-title">📊 近 6 月收支</div><div style="position:relative;height:250px"><canvas id="rep-bar"></canvas></div></div>
-      <div class="card"><div class="card-title">🏅 類別排行</div><div style="position:relative;height:250px"><canvas id="rep-bar-cat"></canvas></div></div>
+      <div class="card"><div class="card-title">📊 近 6 月收支</div><div id="rep-bar-wrap" style="position:relative;height:250px"><canvas id="rep-bar"></canvas></div></div>
+      <div class="card"><div class="card-title">🏅 類別排行</div><div id="rep-bar-cat-wrap" style="position:relative;height:250px"><canvas id="rep-bar-cat"></canvas></div></div>
     </div>
   </section>
 
@@ -1501,9 +1484,14 @@ function renderDashboard(){
   trendInst = new Chart(document.getElementById('trend-chart'),{ type:'line', data:{ labels:trends.map(t=>t.month.slice(5)+'月'), datasets:[ { label:'收入', data:trends.map(t=>t.income),  borderColor:'#5E9478', backgroundColor:'rgba(94,148,120,.1)', fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#5E9478' }, { label:'支出', data:trends.map(t=>t.expense), borderColor:'#B85848', backgroundColor:'rgba(184,88,72,.1)',  fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#B85848' } ]}, options: cOpts() });
 
   const expCats = getExpByCat(month);
-  const pieEl = document.getElementById('pie-chart');
+  const pieWrap = document.getElementById('dash-pie-wrap');
   if(pieInst) pieInst.destroy();
-  if(expCats.length){ pieInst = new Chart(pieEl,{ type:'doughnut', data:{ labels:expCats.map(c=>c.cat), datasets:[{ data:expCats.map(c=>c.total), backgroundColor:PALETTE, borderColor:['#FDFAF5'], borderWidth:3 }]}, options:{...cOpts(), cutout:'58%', plugins:{ legend:{ position:'right', labels:{ color:'#7A5A38', font:{size:11}, boxWidth:11, padding:9 } } } } }); } else pieEl.parentElement.innerHTML = '<div class="empty"><span class="empty-icon">🌸</span>本月無支出記錄</div>';
+  if(expCats.length){ 
+    pieWrap.innerHTML = '<canvas id="pie-chart"></canvas>';
+    pieInst = new Chart(document.getElementById('pie-chart'),{ type:'doughnut', data:{ labels:expCats.map(c=>c.cat), datasets:[{ data:expCats.map(c=>c.total), backgroundColor:PALETTE, borderColor:['#FDFAF5'], borderWidth:3 }]}, options:{...cOpts(), cutout:'58%', plugins:{ legend:{ position:'right', labels:{ color:'#7A5A38', font:{size:11}, boxWidth:11, padding:9 } } } } }); 
+  } else { 
+    pieWrap.innerHTML = '<div class="empty"><span class="empty-icon">🌸</span>本月無支出記錄</div>'; 
+  }
 
   const mBuds = DB.budgets.filter(b=>b.type==='monthly' && b.period===month);
   const bo = document.getElementById('bud-overview');
@@ -1889,18 +1877,35 @@ function renderReports(){
   Object.values(rCharts).forEach(c=>c&&c.destroy&&c.destroy()); rCharts={};
   renderRadar(month); renderGravity(month); renderWeekly(month);
   const ec=getExpByCat(month),ic=getIncByCat(month);
-  const pe=document.getElementById('rep-pie-e');
-  if(ec.length) rCharts.pe=new Chart(pe,{type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  else pe.parentElement.innerHTML='<div class="empty"><span class="empty-icon">🌱</span>本月無支出</div>';
-  const pi=document.getElementById('rep-pie-i');
+  
+  const peWrap=document.getElementById('rep-pie-e-wrap');
+  if(ec.length) {
+      peWrap.innerHTML='<canvas id="rep-pie-e"></canvas>';
+      rCharts.pe=new Chart(document.getElementById('rep-pie-e'),{type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  } else {
+      peWrap.innerHTML='<div class="empty"><span class="empty-icon">🌱</span>本月無支出</div>';
+  }
+
+  const piWrap=document.getElementById('rep-pie-i-wrap');
   const gPal=['#5E9478','#8EB89A','#BED8C8','#6E9E7E','#4E7A60','#9EC4B0'];
-  if(ic.length) rCharts.pi=new Chart(pi,{type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  else pi.parentElement.innerHTML='<div class="empty"><span class="empty-icon">🌿</span>本月無收入</div>';
+  if(ic.length) {
+      piWrap.innerHTML='<canvas id="rep-pie-i"></canvas>';
+      rCharts.pi=new Chart(document.getElementById('rep-pie-i'),{type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  } else {
+      piWrap.innerHTML='<div class="empty"><span class="empty-icon">🌿</span>本月無收入</div>';
+  }
+
   const trends=getMonthlyTrends(6);
+  const barWrap=document.getElementById('rep-bar-wrap');
+  barWrap.innerHTML='<canvas id="rep-bar"></canvas>';
   rCharts.bar=new Chart(document.getElementById('rep-bar'),{type:'bar',data:{labels:trends.map(t=>t.month.slice(5)+'月'),datasets:[{label:'收入',data:trends.map(t=>t.income),backgroundColor:'rgba(94,148,120,.65)',borderRadius:6,borderSkipped:false},{label:'支出',data:trends.map(t=>t.expense),backgroundColor:'rgba(184,88,72,.65)',borderRadius:6,borderSkipped:false}]},options:cOpts()});
+  
   const es=[...ec].sort((a,b)=>b.total-a.total);
+  const bcWrap=document.getElementById('rep-bar-cat-wrap');
+  bcWrap.innerHTML='<canvas id="rep-bar-cat"></canvas>';
   rCharts.bc=new Chart(document.getElementById('rep-bar-cat'),{type:'bar',data:{labels:es.map(c=>c.cat),datasets:[{label:'支出',data:es.map(c=>c.total),backgroundColor:PALETTE,borderRadius:6,borderSkipped:false}]},options:{...cOpts(),plugins:{legend:{display:false}}}});
 }
+
 function renderRadar(month){
   const sixcat=get6Cat(month), totalExp=Object.values(sixcat).reduce((s,v)=>s+v,0);
   const budSix={}; SIX.forEach(c=>budSix[c]=0); 
@@ -1908,7 +1913,9 @@ function renderRadar(month){
   const totalBud=Object.values(budSix).reduce((s,v)=>s+v,0);
   const aP=SIX.map(c=>totalExp>0?parseFloat((sixcat[c]/totalExp*100).toFixed(1)):0);
   const bP=SIX.map(c=>totalBud>0?parseFloat((budSix[c]/totalBud*100).toFixed(1)):0);
-  const el=document.getElementById('rep-radar'); if(radarInst) radarInst.destroy();
+  
+  const el=document.getElementById('rep-radar'); 
+  if(radarInst) radarInst.destroy();
   radarInst=new Chart(el,{type:'radar',data:{labels:SIX,datasets:[{label:'預算 %',data:bP,backgroundColor:'rgba(128,112,168,.15)',borderColor:'rgba(128,112,168,.55)',borderWidth:1.5,pointRadius:3,pointBackgroundColor:'rgba(128,112,168,.55)'},{label:'實際 %',data:aP,backgroundColor:'rgba(184,88,72,.2)',borderColor:'#B85848',borderWidth:2,pointRadius:4,pointBackgroundColor:'#B85848'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7A5A38',font:{size:11}}},tooltip:{backgroundColor:'#FDFAF5',titleColor:'#2E1E0E',bodyColor:'#7A5A38',borderColor:'#D4C4AC',borderWidth:1.5,callbacks:{label:ctx=>` ${ctx.raw}%`}}},scales:{r:{grid:{color:'rgba(180,140,100,.25)'},angleLines:{color:'rgba(180,140,100,.25)'},pointLabels:{color:'#7A5A38',font:{size:11,weight:'700'}},ticks:{display:false},suggestedMin:0}}}});
 }
 function renderGravity(month){
@@ -2095,7 +2102,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 終極修復版上線！這一次保證所有的功能和按鈕都能正常使用囉！快去設定你的 Google API 吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v9.5 穩固版上線！這一次保證報表不會再當機了！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾`,'happy');
 },600);
 </script>
 </body>
