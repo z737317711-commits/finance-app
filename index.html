@@ -121,7 +121,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 .bg-sage{background:linear-gradient(90deg,var(--sage),var(--sage2))}
 .bg-gold{background:linear-gradient(90deg,var(--gold),#DDB850)}
 .bg-rose{background:linear-gradient(90deg,var(--rose),var(--terra2))}
-.bg-exp{background:linear-gradient(90deg,#9E7A58,#C09030)} /* 經驗值進度條顏色 */
+.bg-exp{background:linear-gradient(90deg,#9E7A58,#C09030)}
 
 .game-badge{display:inline-block;padding:3px 8px;border-radius:50px;font-size:.7rem;font-weight:800;background:rgba(192,144,48,.15);color:var(--gold);border:1px solid rgba(192,144,48,.3);margin-bottom:6px;}
 .game-stats{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text2);font-weight:700;margin-top:6px;}
@@ -342,7 +342,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('reports')"><span class="nav-icon">📊</span><span>報表分析</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 遊戲化養成版 v9.0 🌿</div>
+  <div class="sidebar-footer">🔒 Google 雲端同步 v9.1 ☁️</div>
 </nav>
 
 <main class="main">
@@ -380,7 +380,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 
     <div class="stat-grid" id="stat-grid"></div>
     <div class="g2 mb6">
-      <div class="card"><div class="card-title">🕐 最近交易</div><div id="recent-list"></div></div>
+      <div class="card"><div class="card-title">🕐 最近交易 (已排除繳卡費)</div><div id="recent-list"></div></div>
       <div class="card"><div class="card-title">📈 近 6 個月趨勢</div><div style="position:relative;height:210px"><canvas id="trend-chart"></canvas></div></div>
     </div>
     <div class="g2">
@@ -528,18 +528,23 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   <section id="page-settings" class="page">
     <div class="page-header">
       <h1 class="page-title">⚙️ 系統設定</h1>
-      <div style="font-size:.8rem;color:var(--text2);font-weight:600">自訂專屬分類與一鍵防呆備份</div>
+      <div style="font-size:.8rem;color:var(--text2);font-weight:600">自訂專屬分類與 Google Sheets 雲端同步</div>
     </div>
     
     <div class="card mb6">
-      <div class="card-title">💾 備份與還原 (換手機必用)</div>
+      <div class="card-title">☁️ Google Sheets 雲端同步設定</div>
       <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px;line-height:1.6">
-        因為資料安全存放在你的設備中，如果你要換手機或換瀏覽器，請先在這裡下載備份檔（建議傳到 LINE Keep 保存）。<br>在新設備打開理財管家後，點擊上傳還原即可無縫接軌！
+        透過 Google Apps Script，將你的所有記帳資料直接備份到你的 Google 試算表，跨設備無縫接軌。<br>
+        請在上方欄位填入你部署 Apps Script 後取得的「網頁應用程式網址 (Web app URL)」。
       </div>
-      <div class="m-actions" style="justify-content:flex-start; margin-top:10px">
-        <button class="btn btn-p" onclick="downloadLocalBackup()">📥 下載本機備份檔</button>
-        <button class="btn btn-g" onclick="triggerUploadBackup()">☁️ 上傳還原檔</button>
-        <input type="file" id="upload-backup-input" accept=".json" style="display:none;" onchange="processUploadBackup(event)">
+      <div class="form-row">
+        <label>Google Apps Script API 網址</label>
+        <input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+      </div>
+      <div class="m-actions" style="justify-content:flex-start; margin-top:10px; flex-wrap:wrap;">
+        <button class="btn btn-g" onclick="saveGasSettings()">✓ 儲存網址</button>
+        <button class="btn btn-p" onclick="uploadToGas()">☁️ 上傳備份至試算表</button>
+        <button class="btn btn-d" onclick="downloadFromGas()">📥 從試算表拉取還原</button>
       </div>
     </div>
 
@@ -739,6 +744,14 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   </div>
 </div>
 
+<div class="overlay" id="m-pay-hist">
+  <div class="modal" style="min-width:440px">
+    <h2 class="modal-title" id="pay-hist-title">繳款紀錄</h2>
+    <div id="pay-hist-list"></div>
+    <div class="m-actions"><button class="btn btn-g" onclick="closeModal('m-pay-hist')">關閉</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="m-prestige">
   <div class="modal" style="text-align:center;">
     <div style="font-size:3rem; margin-bottom:10px;">🎓</div>
@@ -863,6 +876,7 @@ const GAME_LEVELS = [
 ];
 
 let DB = { transactions:[], budgets:[], debts:[], debt_payments:[], allocations:[], cards:[], categories: null, payMethods: [], game: null };
+let GAS_URL = '';
 
 function loadDB(){ 
   try{ const d=localStorage.getItem('fin_v5'); if(d) DB=JSON.parse(d); }catch(e){} 
@@ -901,24 +915,68 @@ function loadDB(){
 
   if(DB.payMethods.length === 0) DB.payMethods = ['現金', '轉帳', 'LINE PAY'];
   
-  // 遊戲化系統初始化
-  if(!DB.game) {
-      DB.game = { exp: 0, level: 1, prestige: 0, adopted: 1, lastTxDate: null };
-  }
+  if(!DB.game) { DB.game = { exp: 0, level: 1, prestige: 0, adopted: 1, lastTxDate: null }; }
+
+  GAS_URL = localStorage.getItem('gas_url') || '';
 }
 function saveDB(){ localStorage.setItem('fin_v5', JSON.stringify(DB)); }
 function nextId(arr){ return arr.length ? Math.max(...arr.map(x=>x.id||0))+1 : 1; }
+
+// ── Google Sheets Sync ─────────────────────────────────────
+function saveGasSettings(){
+    const url = document.getElementById('gas-url').value.trim();
+    localStorage.setItem('gas_url', url);
+    GAS_URL = url;
+    toast('Google API 網址已儲存 ✓');
+}
+
+async function uploadToGas(){
+    if(!GAS_URL) { toast('請先輸入並儲存 Google API 網址', 'err'); return; }
+    toast('☁️ 正在加密上傳備份至 Google Sheets...');
+    try {
+        const res = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(DB)
+        });
+        toast('☁️ 已成功將資料備份至 Google 試算表！');
+    } catch(e) {
+        toast('網路連線錯誤，請確認網址正確', 'err');
+    }
+}
+
+async function downloadFromGas(){
+    if(!GAS_URL) { toast('請先輸入並儲存 Google API 網址', 'err'); return; }
+    if(!confirm('這會用雲端資料【完全覆蓋】你目前設備上的所有資料喔！確定嗎？')) return;
+    toast('📥 正在從 Google Sheets 下載還原...');
+    try {
+        const res = await fetch(GAS_URL);
+        if(res.ok) {
+            const text = await res.text();
+            if(text && text.includes('transactions')) {
+                DB = JSON.parse(text);
+                saveDB();
+                toast('📥 還原成功！系統將自動重新載入...');
+                setTimeout(()=>location.reload(), 1500);
+            } else {
+                toast('試算表內找不到有效的備份資料', 'err');
+            }
+        } else toast('下載失敗，請檢查網址設定', 'err');
+    } catch(e) {
+        toast('網路連線錯誤', 'err');
+    }
+}
 
 // ── 遊戲化核心邏輯 ──────────────────────────────────
 function getLevelReq(lvl) {
     if(lvl > GAME_LEVELS.length) return 999999;
     let base = GAME_LEVELS[lvl-1].req;
-    let mult = Math.pow(1.5, DB.game.prestige); // 轉生倍率
+    let mult = Math.pow(1.5, DB.game.prestige); 
     return Math.round(base * mult);
 }
 
 function addExp(pts, reason) {
-    if(DB.game.level >= GAME_LEVELS.length) return; // 滿級不再加經驗
+    if(DB.game.level >= GAME_LEVELS.length) return; 
     DB.game.exp += pts;
     toast(`✨ ${reason} (EXP +${pts})`, 'ok');
     
@@ -930,7 +988,7 @@ function addExp(pts, reason) {
         setTimeout(() => {
             CAT.addMsg(`🎉 恭喜！我升級啦！現在是【${crown}${newTitle}】了喵！`, 'excited');
             if(DB.game.level === GAME_LEVELS.length) {
-                setTimeout(openPrestigeModal, 2000); // 滿等觸發轉生視窗
+                setTimeout(openPrestigeModal, 2000); 
             }
         }, 1500);
     }
@@ -938,9 +996,7 @@ function addExp(pts, reason) {
     if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
 }
 
-function openPrestigeModal() {
-    openModal('m-prestige');
-}
+function openPrestigeModal() { openModal('m-prestige'); }
 
 function doPrestige(choice) {
     if(choice === 'adopt') {
@@ -956,21 +1012,11 @@ function doPrestige(choice) {
         toast('✨ 咪嚕進階轉生成功！難度提升！');
         CAT.addMsg('喵呼！感覺全身充滿了力量！未來的理財挑戰我也不怕了喵！', 'excited');
     }
-    saveDB();
-    closeModal('m-prestige');
-    renderDashboard();
+    saveDB(); closeModal('m-prestige'); renderDashboard();
 }
 
 const getCards = () => DB.cards.map(c => c.name);
 const cat2six = (cat) => DB.categories.expense[cat]?.envelope || '必要支出';
-
-const fmt = v => `NT$ ${Number(v).toLocaleString('zh-TW')}`;
-const fmtShort = v => v>=1000 ? `$${(v/1000).toFixed(1)}k` : `$${Math.round(v)}`;
-const today = () => new Date().toISOString().slice(0,10);
-const thisMonth = () => new Date().toISOString().slice(0,7);
-const nowTime = () => new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-
-function toast(msg, type='ok'){ const t=document.getElementById('toast'); t.textContent=(type==='ok'?'🌿 ':'🍂 ')+msg; t.className=`toast show ${type}`; setTimeout(()=>t.className='toast',2800); }
 
 function nav(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -981,17 +1027,6 @@ function nav(page){
   renders[page]?.();
   updateGlobalSelects();
 }
-
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-document.querySelectorAll('.overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }); });
-
-function updateGlobalSelects() {
-    const cardOpts = getCards().map(c=>`<option value="${c}">${c}</option>`).join('');
-    const recCard = document.getElementById('rec-card');
-    if (recCard) recCard.innerHTML = cardOpts;
-}
-
 
 // ── TX Modal ────────────────────────────────────────
 let curType = 'expense';
@@ -1079,8 +1114,6 @@ function saveTx(){
       } else {
           toast('已儲存 ✓');
       }
-      
-      // 10% 暴擊機率
       if (Math.random() < 0.1) {
           setTimeout(() => { addExp(50, '🎉 暴擊！咪嚕在沙發下翻到一枚金幣'); }, 1200);
       }
@@ -1304,7 +1337,6 @@ function importReconciled() {
         document.getElementById('rec-input').value = ''; 
         renderTx(); 
         
-        // 觸發經驗值
         if(hasPayment) addExp(30, '繳清卡費！財務壓力減輕');
         else addExp(15, '認真核對帳單，抓出漏網之魚');
     } 
@@ -1344,7 +1376,6 @@ function renderDashboard(){
   const mc = {'survival':'#5E9478','life':'#C09030','wealth':'#8070A8'};
   document.getElementById('dash-mode-badge').innerHTML = `<span style="background:${mc[mode.key]}22;color:${mc[mode.key]};border:1px solid ${mc[mode.key]}44;border-radius:50px;padding:3px 10px;font-size:.72rem;">${mode.name}</span>`;
 
-  // 渲染遊戲卡片
   let currentLevel = DB.game.level;
   let crown = "✨".repeat(DB.game.prestige);
   document.getElementById('game-level-badge').textContent = `Lv.${currentLevel}`;
@@ -1698,7 +1729,7 @@ function savePayment(){
   const d=DB.debts.find(x=>x.id===di); d.paid+=amt; 
   if(d.paid>=d.total){ d.status='paid'; toast(`🎉 ${d.name} 已全部繳清！`); } else toast('紀錄已儲存 ✓'); 
   saveDB(); closeModal('m-pay'); renderDebt(); 
-  addExp(30, '繳清一筆貸款！財務壓力減輕'); // Game Trigger
+  addExp(30, '繳清一筆貸款！財務壓力減輕');
 }
 function showPayHist(debtId){ const d=DB.debts.find(x=>x.id===debtId),pays=DB.debt_payments.filter(p=>p.debt_id===debtId).sort((a,b)=>b.pay_date.localeCompare(a.pay_date)); document.getElementById('pay-hist-title').textContent=`📋 ${d.name} 繳款紀錄`; document.getElementById('pay-hist-list').innerHTML=pays.length?pays.map(p=>`<div class="pay-row"><span style="color:var(--text2)">${p.pay_date}</span><span>${p.note||'—'}</span><span style="color:var(--sage);font-weight:800">+${fmt(p.amount)}</span></div>`).join(''):'<div class="empty">🌱 尚無繳款記錄</div>'; openModal('m-pay-hist'); }
 function deleteDebt(id){ if(!confirm('確定刪除此紀錄？'))return; DB.debts=DB.debts.filter(d=>d.id!==id); DB.debt_payments=DB.debt_payments.filter(p=>p.debt_id!==id); saveDB(); toast('已刪除'); renderDebt(); }
@@ -1805,8 +1836,10 @@ function renderWeekly(month){
   el.innerHTML=hdr+rows+totRow;
 }
 
-// ── SETTINGS (防呆備份版) ─────────────────────────────────────────
+// ── SETTINGS ─────────────────────────────────────────
 function renderSettings() {
+  document.getElementById('gas-url').value = GAS_URL;
+
   const expList = document.getElementById('set-exp-list');
   let expHtml = '';
   for(let cat in DB.categories.expense) {
@@ -1847,42 +1880,6 @@ function renderSettings() {
       <div class="set-item-title">${pm}</div>
       <button class="btn btn-d btn-sm" onclick="deletePayMethod(${i})">刪除</button>
   </li>`).join('');
-}
-
-// 一鍵下載備份
-function downloadLocalBackup() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB));
-    const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `理財管家備份_${today()}.json`);
-    dlAnchorElem.click();
-    toast('📥 已下載備份檔！');
-}
-
-// 一鍵上傳還原
-function triggerUploadBackup() {
-    document.getElementById('upload-backup-input').click();
-}
-function processUploadBackup(event) {
-    const file = event.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            if(data.transactions) {
-                DB = data;
-                saveDB();
-                toast('☁️ 還原成功！即將重新載入...');
-                setTimeout(()=>location.reload(), 1500);
-            } else {
-                toast('檔案格式錯誤', 'err');
-            }
-        } catch(err) {
-            toast('讀取失敗，請確認是正確的 JSON 備份檔', 'err');
-        }
-    };
-    reader.readAsText(file);
 }
 
 function promptAddExpCat() {
@@ -1973,7 +1970,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 遊戲化養成版上線！記帳和繳卡費都能獲得經驗值，來看看你能拿到什麼專屬稱號吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾 去「今日總覽」看看我現在是什麼稱號了喵！`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v9.1 完全版上線！去「系統設定」試試 Google 雲端同步吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾`,'happy');
 },600);
 </script>
 </body>
