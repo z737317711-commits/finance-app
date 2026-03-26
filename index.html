@@ -53,7 +53,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .card-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px}
 .mb4{margin-bottom:16px}.mb6{margin-bottom:24px}
 
-/* ══ EMPTY STATE ══════════════════════════════ */
+/* ══ EMPTY STATE (防呆畫布) ═══════════════════ */
 .empty{padding:30px 20px;text-align:center;color:var(--text3);font-size:.85rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;}
 .empty-icon{font-size:2rem;opacity:.6}
 
@@ -306,7 +306,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 /* ══ MOBILE RWD ADJUSTMENTS ══════════════════ */
 @media(max-width: 768px) {
   body { flex-direction: column; }
-  
   .sidebar { 
     width: 100%; min-width: 100%; height: 70px; flex-direction: row; 
     border-right: none; border-top: 1px solid rgba(255,255,255,0.08); 
@@ -314,21 +313,18 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
   }
   .logo-area, .sidebar-footer { display: none; }
-  
   .nav-list { 
     flex-direction: row; align-items: center; justify-content: flex-start; 
     padding: 0 10px; margin: 0; overflow-x: auto; overflow-y: hidden; 
     gap: 8px; width: 100%; -webkit-overflow-scrolling: touch; 
   }
   .nav-list::-webkit-scrollbar { display: none; }
-  
   .nav-item { flex-direction: column; padding: 6px 4px; min-width: 65px; border-radius: 12px; gap: 4px; justify-content: center; }
   .nav-item.nav-bottom { margin-top: 0; border-top: none; padding-top: 6px; }
   .nav-item span { display: block; font-size: 0.6rem; line-height: 1; text-align: center; margin-top: 2px;}
   .nav-item:hover, .nav-item.active { transform: none; box-shadow: none; }
   .nav-item.active { background: linear-gradient(135deg,var(--terra),#D4956A); color: white; }
   .nav-icon { font-size: 1.2rem; width: 100%; text-align: center; }
-  
   .main { order: 1; padding: 15px 12px; padding-bottom: 20px; }
   
   /* Modals RWD fix */
@@ -340,11 +336,9 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   
   .tabs { flex-wrap: wrap; }
   .frow select, .frow input { flex: 1; min-width: 100px; }
-  
   .cat-fab { bottom: 85px; right: 15px; width: 54px; height: 54px; }
   .cat-fab svg { width: 36px; height: 36px; }
   .cat-panel { width: calc(100vw - 30px); right: 15px; bottom: 150px; max-height: 60vh; }
-  
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .g2, .g3, .g4, .env-grid, .sixcat-grid, .mode-grid { grid-template-columns: 1fr; }
 }
@@ -378,7 +372,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('review')"><span class="nav-icon">🕰️</span><span>時光回顧</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 徹底修復版 v10.2 🌿</div>
+  <div class="sidebar-footer">🔒 終極修復版 v10.3 🌿</div>
 </nav>
 
 <main class="main">
@@ -419,19 +413,13 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       <div class="card"><div class="card-title">🕐 最近交易</div><div id="recent-list"></div></div>
       <div class="card">
         <div class="card-title">📈 近 6 個月趨勢</div>
-        <div style="position:relative;height:210px">
-          <canvas id="trend-chart"></canvas>
-          <div id="empty-trend" class="empty" style="display:none"><span class="empty-icon">🌱</span>無資料</div>
-        </div>
+        <div id="dash-trend-wrap" style="position:relative;height:210px"></div>
       </div>
     </div>
     <div class="g2">
       <div class="card">
         <div class="card-title">🍰 本月支出分類</div>
-        <div style="position:relative;height:210px">
-          <canvas id="pie-chart"></canvas>
-          <div id="empty-dash-pie" class="empty" style="display:none"><span class="empty-icon">🌸</span>本月無支出記錄</div>
-        </div>
+        <div id="dash-pie-wrap" style="position:relative;height:210px"></div>
       </div>
       <div class="card"><div class="card-title">🎯 月預算狀況</div><div id="bud-overview"></div></div>
     </div>
@@ -484,7 +472,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       </div>
       <button class="btn btn-p" onclick="processReconcile()">⚡ 開始智慧解析</button>
     </div>
-    
     <div id="rec-result-area" style="display:none">
       <div class="sbar" id="rec-summary"></div>
       <div class="tbl-wrap mb4">
@@ -507,9 +494,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
         <button class="btn btn-g" onclick="renderBudgetPage()">查詢</button>
       </div>
     </div>
-
     <div id="mode-current" class="card mb4"></div>
-
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
       <h3 style="font-size:1.1rem; color:var(--text);">🗂️ 1. 心理防線：大信封</h3>
       <button class="btn btn-p" onclick="openAllocModal()">⚡ 分配本月收入</button>
@@ -517,9 +502,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <div class="card mb4" id="env-income-bar"></div>
     <div class="env-grid" id="env-grid"></div>
     <div id="env-reflection"></div>
-
     <hr style="border:0; border-top:1.5px dashed var(--border); margin: 32px 0;">
-
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
       <h3 style="font-size:1.1rem; color:var(--text);">🎯 2. 實際控管：細項預算</h3>
       <button class="btn btn-g" onclick="openBudgetModal()">＋ 設定類別預算</button>
@@ -542,10 +525,8 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       </div>
     </div>
     <div id="debt-summary" class="card mb4" style="display:none"></div>
-    
     <h3 class="mb4" style="font-size:1rem; color:var(--text);">💳 信用卡動態卡費</h3>
     <div id="cc-grid" class="g3 mb6"></div>
-    
     <h3 class="mb4" style="font-size:1rem; color:var(--text);">🏦 一般長期貸款</h3>
     <div id="loan-grid" class="g2"></div>
   </section>
@@ -561,10 +542,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <div class="g2 mb6">
       <div class="card">
         <div class="card-title">🕸️ 六大類雷達圖</div>
-        <div style="position:relative;height:270px">
-          <canvas id="rep-radar"></canvas>
-          <div id="empty-rep-radar" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌱</span>無預算或支出資料</div>
-        </div>
+        <div id="rep-radar-wrap" style="position:relative;height:270px"></div>
         <div style="font-size:.68rem;color:var(--text3);text-align:center;margin-top:4px;font-weight:500">半透明＝預算比例・實心＝實際比例</div>
       </div>
       <div class="card"><div class="card-title">⚖️ 生活重心</div><div id="rep-gravity"></div></div>
@@ -573,33 +551,21 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <div class="g2 mb6">
       <div class="card">
         <div class="card-title">🍩 支出分類</div>
-        <div style="position:relative;height:250px">
-          <canvas id="rep-pie-e"></canvas>
-          <div id="empty-rep-pie-e" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌱</span>本月無支出</div>
-        </div>
+        <div id="rep-pie-e-wrap" style="position:relative;height:250px"></div>
       </div>
       <div class="card">
         <div class="card-title">💚 收入來源</div>
-        <div style="position:relative;height:250px">
-          <canvas id="rep-pie-i"></canvas>
-          <div id="empty-rep-pie-i" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌿</span>本月無收入</div>
-        </div>
+        <div id="rep-pie-i-wrap" style="position:relative;height:250px"></div>
       </div>
     </div>
     <div class="g2">
       <div class="card">
         <div class="card-title">📊 近 6 月收支</div>
-        <div style="position:relative;height:250px">
-          <canvas id="rep-bar"></canvas>
-          <div id="empty-rep-bar" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌱</span>無資料</div>
-        </div>
+        <div id="rep-bar-wrap" style="position:relative;height:250px"></div>
       </div>
       <div class="card">
         <div class="card-title">🏅 類別排行</div>
-        <div style="position:relative;height:250px">
-          <canvas id="rep-bar-cat"></canvas>
-          <div id="empty-rep-bar-cat" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌱</span>無支出資料</div>
-        </div>
+        <div id="rep-bar-cat-wrap" style="position:relative;height:250px"></div>
       </div>
     </div>
   </section>
@@ -609,7 +575,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       <h1 class="page-title">🕰️ 時光回顧</h1>
       <div style="font-size:.8rem;color:var(--text2);font-weight:600">檢視你的理財心路歷程與成長軌跡</div>
     </div>
-
     <div class="g2 mb6">
       <div class="card">
         <div class="card-title">🏆 咪嚕成就相簿</div>
@@ -623,7 +588,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
         <button class="btn btn-p" style="width:100%; justify-content:center;" onclick="doWrapped()">✨ 請咪嚕幫我做理財大回顧</button>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">📖 財務反思日記牆</div>
       <div style="font-size:.75rem; color:var(--text3); margin-bottom:10px; font-weight:600;">你在「預算規劃」寫下的超支反思，與咪嚕給你的專屬建議都會收錄在這裡。</div>
@@ -693,7 +657,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       </div>
     </div>
   </section>
-
 </main>
 
 <div class="overlay" id="m-confirm">
@@ -716,7 +679,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       <button class="tab" id="tab-c" onclick="setTxType('card_payment')">💳 繳卡費</button>
     </div>
     <input type="hidden" id="tx-id">
-    
     <div class="form-row two-col" id="row-pm">
       <div><label id="lbl-cat">主類別 *</label><select id="tx-cat" style="width:100%" onchange="updateSubcats()"></select></div>
       <div id="col-subcat"><label>子類別</label><select id="tx-subcat" style="width:100%"></select></div>
@@ -888,17 +850,14 @@ tbody td{padding:10px 14px; vertical-align: middle;}
       你的財務紀律已經達到了神人等級，掌管金庫的招財神貓為你感到驕傲！<br>
       接下來，你希望你的理財旅程怎麼繼續呢？
     </div>
-    
     <div class="card mb4" style="text-align:left; cursor:pointer; transition:transform .2s; border-color:var(--sage2);" onclick="doPrestige('adopt')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
       <div style="font-weight:900; color:var(--sage); margin-bottom:4px;">🐈 開設貓咪中途之家</div>
       <div style="font-size:.75rem; color:var(--text2);">保留原本的難度，重新收編一隻新貓咪。系統會幫你記錄你總共拯救了幾隻主子！</div>
     </div>
-
     <div class="card" style="text-align:left; cursor:pointer; transition:transform .2s; border-color:var(--gold);" onclick="doPrestige('ascend')" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
       <div style="font-weight:900; color:var(--gold); margin-bottom:4px;">✨ 咪嚕進階轉生</div>
       <div style="font-size:.75rem; color:var(--text2);">還是同一隻咪嚕，但會獲得「轉生星星」。升級難度變為 1.5 倍，挑戰你的自律極限！</div>
     </div>
-    
     <div class="m-actions" style="justify-content:center;">
       <button class="btn btn-g" onclick="closeModal('m-prestige')">讓我再想想</button>
     </div>
@@ -1185,7 +1144,8 @@ function doPrestige(choice) {
         toast('✨ 咪嚕進階轉生成功！難度提升！');
         CAT.addMsg('喵呼！感覺全身充滿了力量！未來的理財挑戰我也不怕了喵！', 'excited');
     }
-    saveDB(); closeModal('m-prestige'); renderDashboard(); renderReview();
+    saveDB(); closeModal('m-prestige'); renderDashboard(); 
+    if(document.getElementById('page-review')?.classList.contains('active')) renderReview();
 }
 
 const getCards = () => DB.cards.map(c => c.name);
@@ -1544,6 +1504,19 @@ function getAllocForMonth(month){ return DB.allocations.find(a=>a.month===month)
 
 function cOpts(extra={}){ return { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:'#7A5A38', font:{size:11}, padding:12 } }, tooltip:{ backgroundColor:'#FDFAF5', titleColor:'#2E1E0E', bodyColor:'#7A5A38', borderColor:'#D4C4AC', borderWidth:1.5, padding:10, titleFont:{weight:'700'}, callbacks:{ label:ctx=>` NT$ ${Number(ctx.raw).toLocaleString('zh-TW')}` } } }, scales:{ x:{ grid:{ color:'rgba(180,140,100,.2)' }, ticks:{ color:'#7A5A38', font:{size:11} } }, y:{ grid:{ color:'rgba(180,140,100,.2)' }, ticks:{ color:'#7A5A38', font:{size:11}, callback:v=>v>=1000?'$'+(v/1000)+'k':'$'+v } } }, ...extra }; }
 
+// ── 畫布防呆重繪功能 (v10.3) ──
+function renderChartSafe(wrapperId, hasData, canvasId, chartFactory, emptyHtml) {
+    const wrap = document.getElementById(wrapperId);
+    if (!wrap) return null;
+    if (!hasData) {
+        wrap.innerHTML = emptyHtml;
+        return null;
+    }
+    wrap.innerHTML = `<canvas id="${canvasId}"></canvas>`;
+    const ctx = document.getElementById(canvasId);
+    return chartFactory(ctx);
+}
+
 let trendInst, pieInst;
 function renderDashboard(){
   const month = document.getElementById('dash-month').value || thisMonth();
@@ -1587,27 +1560,18 @@ function renderDashboard(){
   if(!recent.length){ rl.innerHTML='<div class="empty"><span class="empty-icon">🌱</span>尚無交易記錄</div>'; }
   else rl.innerHTML = recent.map(t=>{ const ii=t.type==='income'; return `<div class="tx-row"><div class="tx-icon ${ii?'inc':'exp'}">${ii?'↑':'↓'}</div><div class="tx-info"><div class="tx-cat">${t.cat}${t.subcat?` <span style="font-size:0.7rem;color:var(--text3);font-weight:600">❯ ${t.subcat}</span>`:''}</div><div class="tx-note">${t.payMethod} ${t.note?` • ${t.note}`:''}</div></div><div class="tx-right"><div class="tx-amt ${ii?'amt-in':'amt-out'}">${ii?'+':'−'}${fmt(t.amount)}</div><div class="tx-date">${t.date}</div></div></div>`; }).join('');
 
-  const trendCanvas = document.getElementById('trend-chart');
-  const emptyTrend = document.getElementById('empty-trend');
   if(trendInst) trendInst.destroy();
   const trends = getMonthlyTrends(6);
-  if(trends.some(t => t.income > 0 || t.expense > 0)) {
-      trendCanvas.style.display = 'block'; emptyTrend.style.display = 'none';
-      trendInst = new Chart(trendCanvas,{ type:'line', data:{ labels:trends.map(t=>t.month.slice(5)+'月'), datasets:[ { label:'收入', data:trends.map(t=>t.income),  borderColor:'#5E9478', backgroundColor:'rgba(94,148,120,.1)', fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#5E9478' }, { label:'支出', data:trends.map(t=>t.expense), borderColor:'#B85848', backgroundColor:'rgba(184,88,72,.1)',  fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#B85848' } ]}, options: cOpts() });
-  } else {
-      trendCanvas.style.display = 'none'; emptyTrend.style.display = 'flex';
-  }
+  const hasTrend = trends.some(t => t.income > 0 || t.expense > 0);
+  trendInst = renderChartSafe('dash-trend-wrap', hasTrend, 'trend-chart', (ctx) => {
+      return new Chart(ctx, { type:'line', data:{ labels:trends.map(t=>t.month.slice(5)+'月'), datasets:[ { label:'收入', data:trends.map(t=>t.income),  borderColor:'#5E9478', backgroundColor:'rgba(94,148,120,.1)', fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#5E9478' }, { label:'支出', data:trends.map(t=>t.expense), borderColor:'#B85848', backgroundColor:'rgba(184,88,72,.1)',  fill:true, tension:.42, pointRadius:4, pointBackgroundColor:'#B85848' } ]}, options: cOpts() });
+  }, '<div class="empty"><span class="empty-icon">🌱</span>無資料</div>');
 
   const expCats = getExpByCat(month);
-  const dashPie = document.getElementById('pie-chart');
-  const emptyDashPie = document.getElementById('empty-dash-pie');
   if(pieInst) pieInst.destroy();
-  if(expCats.length){ 
-      dashPie.style.display = 'block'; emptyDashPie.style.display = 'none';
-      pieInst = new Chart(dashPie,{ type:'doughnut', data:{ labels:expCats.map(c=>c.cat), datasets:[{ data:expCats.map(c=>c.total), backgroundColor:PALETTE, borderColor:['#FDFAF5'], borderWidth:3 }]}, options:{...cOpts(), cutout:'58%', plugins:{ legend:{ position:'right', labels:{ color:'#7A5A38', font:{size:11}, boxWidth:11, padding:9 } } } } }); 
-  } else { 
-      dashPie.style.display = 'none'; emptyDashPie.style.display = 'flex';
-  }
+  pieInst = renderChartSafe('dash-pie-wrap', expCats.length > 0, 'pie-chart', (ctx) => {
+      return new Chart(ctx, { type:'doughnut', data:{ labels:expCats.map(c=>c.cat), datasets:[{ data:expCats.map(c=>c.total), backgroundColor:PALETTE, borderColor:['#FDFAF5'], borderWidth:3 }]}, options:{...cOpts(), cutout:'58%', plugins:{ legend:{ position:'right', labels:{ color:'#7A5A38', font:{size:11}, boxWidth:11, padding:9 } } } } }); 
+  }, '<div class="empty"><span class="empty-icon">🌸</span>本月無支出記錄</div>');
 
   const mBuds = DB.budgets.filter(b=>b.type==='monthly' && b.period===month);
   const bo = document.getElementById('bud-overview');
@@ -1892,84 +1856,12 @@ async function submitReflection(cat, overAmt, inputId) {
     let reply = await CAT.callAI(prompt, CAT.buildCtx(thisMonth()));
     if(!reply) reply = '咪嚕現在腦袋有點打結，稍後再試試看喵！';
     
-    // 儲存到日記
     DB.reflections.push({ date: today(), cat: cat, over: overAmt, text: text, reply: reply });
     saveDB();
     
     CAT.addMsg(reply, 'thinking');
     document.getElementById(inputId).value = ''; 
     addExp(10, '完成反思！');
-}
-
-// ── REVIEW PAGE (時光回顧) ──────────────────────────────────
-function renderReview() {
-    let currentLevel = DB.game.level;
-    let crown = "✨".repeat(DB.game.prestige);
-    let title = GAME_LEVELS[currentLevel-1].title;
-    
-    document.getElementById('review-album').innerHTML = `
-        <div style="font-size:3.5rem; margin-bottom:10px;">👑</div>
-        <div style="font-size:1.4rem; font-weight:900; color:var(--terra2); margin-bottom:5px;">${crown}${title}</div>
-        <div style="font-size:.85rem; color:var(--text2); font-weight:600; margin-bottom:15px;">目前等級 Lv.${currentLevel} • 累積 ${DB.game.exp} EXP</div>
-        <div style="display:flex; justify-content:center; gap:15px;">
-            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
-                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">轉生次數</div>
-                <div style="font-size:1.2rem; font-weight:900; color:var(--gold);">${DB.game.prestige} 次</div>
-            </div>
-            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
-                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">收編貓咪</div>
-                <div style="font-size:1.2rem; font-weight:900; color:var(--sage);">${DB.game.adopted} 隻</div>
-            </div>
-        </div>
-    `;
-
-    const diaryWrap = document.getElementById('review-diary');
-    if (!DB.reflections || DB.reflections.length === 0) {
-        diaryWrap.innerHTML = '<div class="empty" style="padding:40px 20px;"><span class="empty-icon">📖</span>尚未寫下任何反思<br><span style="font-size:.7rem;font-weight:500;margin-top:5px;">在「預算規劃」超支時寫下原因，這裡就會自動幫你存檔喔！</span></div>';
-        diaryWrap.style.borderLeft = 'none';
-        diaryWrap.style.paddingLeft = '0';
-    } else {
-        diaryWrap.style.borderLeft = '2px solid var(--terra3)';
-        diaryWrap.style.paddingLeft = '16px';
-        diaryWrap.innerHTML = [...DB.reflections].reverse().map(r => `
-            <div class="tl-item">
-                <div class="tl-dot"></div>
-                <div class="tl-date">${r.date}</div>
-                <div class="tl-card">
-                    <div class="tl-title">關於「${r.cat}」超支 ${fmt(r.over)}</div>
-                    <div class="tl-user">「${r.text}」</div>
-                    <div class="tl-ai">🐱 ${r.reply}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-async function doWrapped() {
-    if(!CAT.apiKey) {
-        toast('請先到系統設定啟用 Gemini AI 喔！', 'err');
-        return;
-    }
-    if(!CAT.open) toggleCat();
-    
-    CAT.addMsg('咪嚕，幫我做一段專屬的「年度/階段理財大回顧」吧！ 🎉', 'normal', true);
-    CAT.showTyping();
-    await delay(1500);
-    CAT.hideTyping();
-    
-    const trends = getMonthlyTrends(6);
-    let totalSaved = trends.reduce((s, t) => s + (t.income - t.expense), 0);
-    let topExp = getExpByCat(thisMonth())[0] || {cat: '無', total: 0};
-    
-    const prompt = `請像 Spotify Wrapped 一樣，給我一段活潑、充滿故事性的「理財大回顧」。
-    資料：最近半年總結餘 ${fmt(totalSaved)}。這個月最愛花錢在 ${topExp.cat} (${fmt(topExp.total)})。
-    目前是「${GAME_LEVELS[DB.game.level-1].title}」等級。
-    請用貓咪咪嚕的語氣，肯定用戶的成長，並給予未來期許。大約 150 字，分段清晰。`;
-
-    let reply = await CAT.callAI(prompt, "這是回顧模式");
-    if(!reply) reply = '喵！回顧資料準備中出了點小錯，稍後再試試看！';
-    
-    CAT.addMsg(reply, 'excited');
 }
 
 // ── DEBT & CREDIT CARDS ──────────────────────────────
@@ -2088,39 +1980,41 @@ function renderDebt(){
   if(count > 0){ summary.style.display='block'; summary.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800">🔴 尚未繳清共 ${count} 筆 (含信用卡)</span><span style="color:var(--rose);font-weight:900">總計待繳：${fmt(tr)}</span></div>`; } else summary.style.display='none';
 }
 
-function renderReports(){
-  const month=document.getElementById('rep-month').value||thisMonth(); document.getElementById('rep-month').value=month;
-  Object.values(rCharts).forEach(c=>c&&c.destroy&&c.destroy()); rCharts={};
-  renderRadar(month); renderGravity(month); renderWeekly(month);
-  
-  const ec=getExpByCat(month),ic=getIncByCat(month);
-  
-  const pe = document.getElementById('rep-pie-e'); const empPe = document.getElementById('empty-rep-pie-e');
-  if(ec.length) { 
-      pe.style.display='block'; empPe.style.display='none'; 
-      rCharts.pe=new Chart(pe,{type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  } else { pe.style.display='none'; empPe.style.display='flex'; }
+// ── REPORTS ─────────────────────────────────────────
+let rCharts={}; let radarInst;
 
-  const pi = document.getElementById('rep-pie-i'); const empPi = document.getElementById('empty-rep-pie-i');
+function renderReports(){
+  const month=document.getElementById('rep-month').value||thisMonth(); 
+  document.getElementById('rep-month').value=month;
+  
+  Object.values(rCharts).forEach(c=>c&&c.destroy&&c.destroy()); 
+  rCharts={};
+  
+  renderRadar(month); 
+  renderGravity(month); 
+  renderWeekly(month);
+  
+  const ec=getExpByCat(month), ic=getIncByCat(month);
+  
+  rCharts.pe = renderChartSafe('rep-pie-e-wrap', ec.length > 0, 'rep-pie-e', (ctx) => {
+      return new Chart(ctx, {type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  }, '<div class="empty"><span class="empty-icon">🌱</span>本月無支出</div>');
+
   const gPal=['#5E9478','#8EB89A','#BED8C8','#6E9E7E','#4E7A60','#9EC4B0'];
-  if(ic.length) { 
-      pi.style.display='block'; empPi.style.display='none'; 
-      rCharts.pi=new Chart(pi,{type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  } else { pi.style.display='none'; empPi.style.display='flex'; }
+  rCharts.pi = renderChartSafe('rep-pie-i-wrap', ic.length > 0, 'rep-pie-i', (ctx) => {
+      return new Chart(ctx, {type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  }, '<div class="empty"><span class="empty-icon">🌿</span>本月無收入</div>');
 
   const trends=getMonthlyTrends(6);
-  const bar = document.getElementById('rep-bar'); const empBar = document.getElementById('empty-rep-bar');
-  if(trends.some(t=>t.income>0||t.expense>0)) {
-      bar.style.display='block'; empBar.style.display='none';
-      rCharts.bar=new Chart(bar,{type:'bar',data:{labels:trends.map(t=>t.month.slice(5)+'月'),datasets:[{label:'收入',data:trends.map(t=>t.income),backgroundColor:'rgba(94,148,120,.65)',borderRadius:6,borderSkipped:false},{label:'支出',data:trends.map(t=>t.expense),backgroundColor:'rgba(184,88,72,.65)',borderRadius:6,borderSkipped:false}]},options:cOpts()});
-  } else { bar.style.display='none'; empBar.style.display='flex'; }
+  const hasTrend = trends.some(t => t.income > 0 || t.expense > 0);
+  rCharts.bar = renderChartSafe('rep-bar-wrap', hasTrend, 'rep-bar', (ctx) => {
+      return new Chart(ctx, {type:'bar',data:{labels:trends.map(t=>t.month.slice(5)+'月'),datasets:[{label:'收入',data:trends.map(t=>t.income),backgroundColor:'rgba(94,148,120,.65)',borderRadius:6,borderSkipped:false},{label:'支出',data:trends.map(t=>t.expense),backgroundColor:'rgba(184,88,72,.65)',borderRadius:6,borderSkipped:false}]},options:cOpts()});
+  }, '<div class="empty"><span class="empty-icon">🌱</span>無資料</div>');
   
   const es=[...ec].sort((a,b)=>b.total-a.total);
-  const bc = document.getElementById('rep-bar-cat'); const empBc = document.getElementById('empty-rep-bar-cat');
-  if(es.length) { 
-      bc.style.display='block'; empBc.style.display='none';
-      rCharts.bc=new Chart(bc,{type:'bar',data:{labels:es.map(c=>c.cat),datasets:[{label:'支出',data:es.map(c=>c.total),backgroundColor:PALETTE,borderRadius:6,borderSkipped:false}]},options:{...cOpts(),plugins:{legend:{display:false}}}});
-  } else { bc.style.display='none'; empBc.style.display='flex'; }
+  rCharts.bc = renderChartSafe('rep-bar-cat-wrap', es.length > 0, 'rep-bar-cat', (ctx) => {
+      return new Chart(ctx, {type:'bar',data:{labels:es.map(c=>c.cat),datasets:[{label:'支出',data:es.map(c=>c.total),backgroundColor:PALETTE,borderRadius:6,borderSkipped:false}]},options:{...cOpts(),plugins:{legend:{display:false}}}});
+  }, '<div class="empty"><span class="empty-icon">🌱</span>無支出資料</div>');
 }
 
 function renderRadar(month){
@@ -2129,18 +2023,16 @@ function renderRadar(month){
   DB.budgets.filter(b=>b.type==='monthly' && b.period===month).forEach(b=>{ const sc=cat2six(b.cat); budSix[sc]=(budSix[sc]||0)+b.limit_; });
   const totalBud=Object.values(budSix).reduce((s,v)=>s+v,0);
   
-  const el=document.getElementById('rep-radar'); const empRadar = document.getElementById('empty-rep-radar');
   if(radarInst) radarInst.destroy();
+  const hasData = totalExp > 0 || totalBud > 0;
   
-  if(totalExp > 0 || totalBud > 0) {
-      el.style.display='block'; empRadar.style.display='none';
+  radarInst = renderChartSafe('rep-radar-wrap', hasData, 'rep-radar', (ctx) => {
       const aP=SIX.map(c=>totalExp>0?parseFloat((sixcat[c]/totalExp*100).toFixed(1)):0);
       const bP=SIX.map(c=>totalBud>0?parseFloat((budSix[c]/totalBud*100).toFixed(1)):0);
-      radarInst=new Chart(el,{type:'radar',data:{labels:SIX,datasets:[{label:'預算 %',data:bP,backgroundColor:'rgba(128,112,168,.15)',borderColor:'rgba(128,112,168,.55)',borderWidth:1.5,pointRadius:3,pointBackgroundColor:'rgba(128,112,168,.55)'},{label:'實際 %',data:aP,backgroundColor:'rgba(184,88,72,.2)',borderColor:'#B85848',borderWidth:2,pointRadius:4,pointBackgroundColor:'#B85848'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7A5A38',font:{size:11}}},tooltip:{backgroundColor:'#FDFAF5',titleColor:'#2E1E0E',bodyColor:'#7A5A38',borderColor:'#D4C4AC',borderWidth:1.5,callbacks:{label:ctx=>` ${ctx.raw}%`}}},scales:{r:{grid:{color:'rgba(180,140,100,.25)'},angleLines:{color:'rgba(180,140,100,.25)'},pointLabels:{color:'#7A5A38',font:{size:11,weight:'700'}},ticks:{display:false},suggestedMin:0}}}});
-  } else {
-      el.style.display='none'; empRadar.style.display='flex';
-  }
+      return new Chart(ctx, {type:'radar',data:{labels:SIX,datasets:[{label:'預算 %',data:bP,backgroundColor:'rgba(128,112,168,.15)',borderColor:'rgba(128,112,168,.55)',borderWidth:1.5,pointRadius:3,pointBackgroundColor:'rgba(128,112,168,.55)'},{label:'實際 %',data:aP,backgroundColor:'rgba(184,88,72,.2)',borderColor:'#B85848',borderWidth:2,pointRadius:4,pointBackgroundColor:'#B85848'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7A5A38',font:{size:11}}},tooltip:{backgroundColor:'#FDFAF5',titleColor:'#2E1E0E',bodyColor:'#7A5A38',borderColor:'#D4C4AC',borderWidth:1.5,callbacks:{label:ctx=>` ${ctx.raw}%`}}},scales:{r:{grid:{color:'rgba(180,140,100,.25)'},angleLines:{color:'rgba(180,140,100,.25)'},pointLabels:{color:'#7A5A38',font:{size:11,weight:'700'}},ticks:{display:false},suggestedMin:0}}}});
+  }, '<div class="empty"><span class="empty-icon">🌱</span>無預算或支出資料</div>');
 }
+
 function renderGravity(month){
   const sixcat=get6Cat(month),total=Object.values(sixcat).reduce((s,v)=>s+v,0),el=document.getElementById('rep-gravity');
   if(!total){ el.innerHTML='<div class="empty"><span class="empty-icon" style="font-size:1.6rem">🌱</span>本月尚無支出</div>'; return; }
@@ -2160,6 +2052,7 @@ function renderWeekly(month){
   el.innerHTML=hdr+rows+totRow;
 }
 
+// ── SETTINGS ─────────────────────────────────────────
 function renderSettings() {
   document.getElementById('gas-url').value = GAS_URL;
 
@@ -2359,7 +2252,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 徹底修復版上線！這一次保證所有的圖表都能穩固運行，再也不會當機囉！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 徹底修復版上線！報表崩潰的 bug 已經清除了，真的很抱歉剛剛讓妳不開心了喵！`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 終極穩定版上線！去「報表分析」看看圖表吧，這次保證順暢無比！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾`,'happy');
 },600);
 </script>
 </body>
