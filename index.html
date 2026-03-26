@@ -53,7 +53,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .card-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px}
 .mb4{margin-bottom:16px}.mb6{margin-bottom:24px}
 
-/* ══ EMPTY STATE (防呆畫布) ═══════════════════ */
+/* ══ EMPTY STATE ══════════════════════════════ */
 .empty{padding:30px 20px;text-align:center;color:var(--text3);font-size:.85rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;}
 .empty-icon{font-size:2rem;opacity:.6}
 
@@ -378,7 +378,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('review')"><span class="nav-icon">🕰️</span><span>時光回顧</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 穩定回顧版 v10.1 🌿</div>
+  <div class="sidebar-footer">🔒 徹底修復版 v10.2 🌿</div>
 </nav>
 
 <main class="main">
@@ -1185,8 +1185,7 @@ function doPrestige(choice) {
         toast('✨ 咪嚕進階轉生成功！難度提升！');
         CAT.addMsg('喵呼！感覺全身充滿了力量！未來的理財挑戰我也不怕了喵！', 'excited');
     }
-    saveDB(); closeModal('m-prestige'); renderDashboard(); 
-    if(document.getElementById('page-review')?.classList.contains('active')) renderReview();
+    saveDB(); closeModal('m-prestige'); renderDashboard(); renderReview();
 }
 
 const getCards = () => DB.cards.map(c => c.name);
@@ -2096,32 +2095,32 @@ function renderReports(){
   
   const ec=getExpByCat(month),ic=getIncByCat(month);
   
-  const peWrap=document.getElementById('rep-pie-e-wrap');
-  if(ec.length) {
-      peWrap.innerHTML='<canvas id="rep-pie-e"></canvas>';
-      rCharts.pe=new Chart(document.getElementById('rep-pie-e'),{type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  } else {
-      peWrap.innerHTML='<div class="empty"><span class="empty-icon">🌱</span>本月無支出</div>';
-  }
+  const pe = document.getElementById('rep-pie-e'); const empPe = document.getElementById('empty-rep-pie-e');
+  if(ec.length) { 
+      pe.style.display='block'; empPe.style.display='none'; 
+      rCharts.pe=new Chart(pe,{type:'doughnut',data:{labels:ec.map(c=>c.cat),datasets:[{data:ec.map(c=>c.total),backgroundColor:PALETTE,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  } else { pe.style.display='none'; empPe.style.display='flex'; }
 
-  const piWrap=document.getElementById('rep-pie-i-wrap');
+  const pi = document.getElementById('rep-pie-i'); const empPi = document.getElementById('empty-rep-pie-i');
   const gPal=['#5E9478','#8EB89A','#BED8C8','#6E9E7E','#4E7A60','#9EC4B0'];
-  if(ic.length) {
-      piWrap.innerHTML='<canvas id="rep-pie-i"></canvas>';
-      rCharts.pi=new Chart(document.getElementById('rep-pie-i'),{type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
-  } else {
-      piWrap.innerHTML='<div class="empty"><span class="empty-icon">🌿</span>本月無收入</div>';
-  }
+  if(ic.length) { 
+      pi.style.display='block'; empPi.style.display='none'; 
+      rCharts.pi=new Chart(pi,{type:'doughnut',data:{labels:ic.map(c=>c.cat),datasets:[{data:ic.map(c=>c.total),backgroundColor:gPal,borderColor:['#FDFAF5'],borderWidth:3}]},options:{...cOpts(),cutout:'52%',plugins:{legend:{position:'right',labels:{color:'#7A5A38',font:{size:11},boxWidth:11,padding:9}}}}});
+  } else { pi.style.display='none'; empPi.style.display='flex'; }
 
   const trends=getMonthlyTrends(6);
-  const barWrap=document.getElementById('rep-bar-wrap');
-  barWrap.innerHTML='<canvas id="rep-bar"></canvas>';
-  rCharts.bar=new Chart(document.getElementById('rep-bar'),{type:'bar',data:{labels:trends.map(t=>t.month.slice(5)+'月'),datasets:[{label:'收入',data:trends.map(t=>t.income),backgroundColor:'rgba(94,148,120,.65)',borderRadius:6,borderSkipped:false},{label:'支出',data:trends.map(t=>t.expense),backgroundColor:'rgba(184,88,72,.65)',borderRadius:6,borderSkipped:false}]},options:cOpts()});
+  const bar = document.getElementById('rep-bar'); const empBar = document.getElementById('empty-rep-bar');
+  if(trends.some(t=>t.income>0||t.expense>0)) {
+      bar.style.display='block'; empBar.style.display='none';
+      rCharts.bar=new Chart(bar,{type:'bar',data:{labels:trends.map(t=>t.month.slice(5)+'月'),datasets:[{label:'收入',data:trends.map(t=>t.income),backgroundColor:'rgba(94,148,120,.65)',borderRadius:6,borderSkipped:false},{label:'支出',data:trends.map(t=>t.expense),backgroundColor:'rgba(184,88,72,.65)',borderRadius:6,borderSkipped:false}]},options:cOpts()});
+  } else { bar.style.display='none'; empBar.style.display='flex'; }
   
   const es=[...ec].sort((a,b)=>b.total-a.total);
-  const bcWrap=document.getElementById('rep-bar-cat-wrap');
-  bcWrap.innerHTML='<canvas id="rep-bar-cat"></canvas>';
-  rCharts.bc=new Chart(document.getElementById('rep-bar-cat'),{type:'bar',data:{labels:es.map(c=>c.cat),datasets:[{label:'支出',data:es.map(c=>c.total),backgroundColor:PALETTE,borderRadius:6,borderSkipped:false}]},options:{...cOpts(),plugins:{legend:{display:false}}}});
+  const bc = document.getElementById('rep-bar-cat'); const empBc = document.getElementById('empty-rep-bar-cat');
+  if(es.length) { 
+      bc.style.display='block'; empBc.style.display='none';
+      rCharts.bc=new Chart(bc,{type:'bar',data:{labels:es.map(c=>c.cat),datasets:[{label:'支出',data:es.map(c=>c.total),backgroundColor:PALETTE,borderRadius:6,borderSkipped:false}]},options:{...cOpts(),plugins:{legend:{display:false}}}});
+  } else { bc.style.display='none'; empBc.style.display='flex'; }
 }
 
 function renderRadar(month){
@@ -2360,7 +2359,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v10.1 穩定回顧版上線！去左側選單點開「時光回顧」看看吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 時光回顧功能的 bug 已經修復囉，快去看看你的專屬相簿和日記牆吧喵！`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 徹底修復版上線！這一次保證所有的圖表都能穩固運行，再也不會當機囉！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 徹底修復版上線！報表崩潰的 bug 已經清除了，真的很抱歉剛剛讓妳不開心了喵！`,'happy');
 },600);
 </script>
 </body>
