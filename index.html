@@ -1067,7 +1067,7 @@ const CAT={
 
   async doLifeCheck(){
     const month=thisMonth();this.showTyping();await delay(1800);this.hideTyping();
-    let msg=await this.callAI('從心理學和生活品質角度深度分析消費結構，檢視六大類重心，有沒有情緒消費跡象，給溫柔誠實的生活建議。請用 Markdown 格式。',this.buildCtx(month));
+    let msg=await this.callAI('從心理學和生活品質角度深度分析消費結構，檢視六大類重心，有沒有情緒消費跡象，給溫柔誠實的生活建議。請用 Markdown 格式。字數控制在 400 字以內，確保完整收尾。',this.buildCtx(month));
     if(!msg){const sixcat=get6Cat(month);const topSix=SIX.reduce((a,b)=>(sixcat[a]||0)>(sixcat[b]||0)?a:b);msg=`## 💭 生活心理財務檢視\n\n咪嚕仔細看了你的消費，想說幾句悄悄話喵～\n\n### ⚖️ 生活重心分析\n\n這個月花最多在「**${topSix}**」（${fmt(sixcat[topSix]||0)}）。${SIX_Q[topSix]}\n\n---\n\n💌 財務是生活的鏡子，它反映你的優先級和渴望。不管現在狀況如何，你能認真對待財務，就是在好好照顧自己了 🐾 呼嚕呼嚕～`;}
     this._rpt=msg;rpOpen('💭 生活心理財務檢視','咪嚕的心理學觀察',msg);
     this.addMsg(rpBubble('心理檢視完成喵 💭','💭 生活心理財務檢視','咪嚕的心理學觀察'),'love');
