@@ -786,7 +786,10 @@ function rpStats(month){
     +'</div><hr>';
 }
 function rpBubble(label,title,sub,key){
-  return label+'<br><button class="bbl-btn" onclick="rpOpen(''+title+'',''+sub+'',CAT._rpts[''+key+''||'')">📋 點我展開完整報告</button>';
+  return `${label}<br><button class="bbl-btn" onclick="rpOpenKey('${key}')">📋 點我展開完整報告</button>`;
+}
+function rpOpenKey(key){
+  rpOpen(CAT._rpts[key+'_title']||key, CAT._rpts[key+'_sub']||'', CAT._rpts[key]||'', CAT._rpts[key+'_stats']||'');
 }
 
 // ── GAS sync ──────────────────────────────────
@@ -947,7 +950,7 @@ async function submitReflection(cat,overAmt,inputId){
   let reply=await CAT.callAI(prompt,CAT.buildCtx(thisMonth()));
   if(!reply)reply='咪嚕現在腦袋有點打結，稍後再試試看喵！';
   DB.reflections.push({date:today(),cat,over:overAmt,text,reply});saveDB();
-  CAT._rpts['reflection']=reply;rpOpen('✨ 咪嚕的反思回饋','專屬理財建議',reply);
+  CAT._rpts['reflection']=reply;CAT._rpts['reflection_title']='✨ 咪嚕的反思回饋';CAT._rpts['reflection_sub']='專屬理財建議';CAT._rpts['reflection_stats']='';rpOpen('✨ 咪嚕的反思回饋','專屬理財建議',reply);
   CAT.addMsg(rpBubble('反思回饋出來了喵 ✨','✨ 咪嚕的反思回饋','專屬理財建議','reflection'),'thinking');
   if(document.getElementById(inputId))document.getElementById(inputId).value='';
   addExp(10,'完成反思！');
@@ -970,7 +973,7 @@ async function doWrapped(){
   const prompt=`請像 Spotify Wrapped 一樣，給我一段活潑、充滿故事性的「理財大回顧」。\n資料：最近半年總結餘 ${fmt(totalSaved)}。這個月最愛花錢在 ${topExp.cat} (${fmt(topExp.total)})。\n目前是「${GAME_LEVELS[DB.game.level-1].title}」等級。\n請用貓咪咪嚕的語氣，肯定用戶的成長，並給予未來期許。大約 200 字，分段清晰，使用 Markdown 格式。`;
   let reply=await CAT.callAI(prompt,'這是回顧模式');
   if(!reply)reply='喵！回顧資料準備中出了點小錯，稍後再試試看！';
-  CAT._rpts['wrapped']=reply;rpOpen('🎉 咪嚕理財大回顧','你的專屬 Wrapped',reply,rpStats(thisMonth()));
+  CAT._rpts['wrapped']=reply;CAT._rpts['wrapped_title']='🎉 咪嚕理財大回顧';CAT._rpts['wrapped_sub']='你的專屬 Wrapped';CAT._rpts['wrapped_stats']=rpStats(thisMonth());rpOpen('🎉 咪嚕理財大回顧','你的專屬 Wrapped',reply,rpStats(thisMonth()));
   CAT.addMsg(rpBubble('大回顧報告出爐 🎉','🎉 咪嚕理財大回顧','你的專屬 Wrapped','wrapped'),'excited');
 }
 
@@ -1051,7 +1054,7 @@ const CAT={
     let msg=await this.callAI('幫我做近7天消費小結，注意週末消費比例和消費模式，最後給1條實用建議。請用 Markdown 格式。',ctx);
     if(!msg){msg=`## 📅 本週小結\n\n本週支出 **${fmt(exp)}**、收入 **${fmt(inc)}** 喵～\n\n`;if(wkend>exp*.45)msg+=`🌙 週末消費佔了 **${(wkend/exp*100).toFixed(0)}%**——閒著容易手滑，這很正常。下次週末前先想好「今天預計花多少」，給自己一個小框架喵。`;else msg+=`週末消費控制得不錯！繼續保持 🌿`;}
     const statsHtml=`<div class="rp-stats"><div class="rp-sc"><div class="rp-sv" style="color:var(--rose)">${fmt(exp)}</div><div class="rp-sl">7日支出</div></div><div class="rp-sc"><div class="rp-sv" style="color:var(--sage)">${fmt(inc)}</div><div class="rp-sl">7日收入</div></div><div class="rp-sc"><div class="rp-sv" style="color:var(--gold)">${fmt(wkend)}</div><div class="rp-sl">週末消費</div></div></div><hr>`;
-    this._rpts['weekly']=msg;rpOpen('📅 本週消費小結','咪嚕的7日觀察',msg,statsHtml);
+    this._rpts['weekly']=msg;this._rpts['weekly_title']='📅 本週消費小結';this._rpts['weekly_sub']='咪嚕的7日觀察';this._rpts['weekly_stats']=statsHtml;rpOpen('📅 本週消費小結','咪嚕的7日觀察',msg,statsHtml);
     this.addMsg(rpBubble('本週小結出來囉喵 🎉','📅 本週消費小結','咪嚕的7日觀察','weekly'),'thinking');
   },
 
@@ -1059,9 +1062,7 @@ const CAT={
     const month=thisMonth();this.showTyping();await delay(1600);this.hideTyping();
     let msg=await this.callAI(`做${month}月完整財務報告，用心理學視角分析，檢視50/30/20和信封預算執行狀況，給3條具體建議。請用 Markdown 格式，有 ## 標題和 - 清單。`,this.buildCtx(month));
     if(!msg){const{inc,exp}=getMonthlySummary(month),sr=inc>0?((inc-exp)/inc*100).toFixed(1):0,ec=getExpByCat(month);msg=`## 📊 ${month.slice(5)}月財務報告\n\n- 收入：**${fmt(inc)}**\n- 支出：**${fmt(exp)}**\n- 結餘：**${fmt(inc-exp)}**\n- 儲蓄率：**${sr}%**\n\n`;if(ec.length)msg+=`## 🏅 支出前三\n${ec.slice(0,3).map((c,i)=>`${i+1}. **${c.cat}**：${fmt(c.total)}`).join('\n')}\n\n`;msg+=`---\n\n💌 每個月認真看財務，就已經很棒了喵 🌿`;}
-    this._rpts['monthly']=msg;
-    const _m=thisMonth();
-    rpOpen(`📊 ${_m.slice(5)}月財務報告`,'咪嚕的月度分析',msg,rpStats(_m));
+    this._rpts['monthly']=msg;const _m=thisMonth();this._rpts['monthly_title']=`📊 ${_m.slice(5)}月財務報告`;this._rpts['monthly_sub']='咪嚕的月度分析';this._rpts['monthly_stats']=rpStats(_m);rpOpen(`📊 ${_m.slice(5)}月財務報告`,'咪嚕的月度分析',msg,rpStats(_m));
     this.addMsg(rpBubble('月報出爐囉喵 📊',`📊 ${thisMonth().slice(5)}月財務報告`,'咪嚕的月度分析','monthly'),'thinking');
   },
 
@@ -1069,7 +1070,7 @@ const CAT={
     const month=thisMonth();this.showTyping();await delay(1800);this.hideTyping();
     let msg=await this.callAI('從心理學和生活品質角度深度分析消費結構，檢視六大類重心，有沒有情緒消費跡象，給溫柔誠實的生活建議。請用 Markdown 格式。字數控制在 400 字以內，確保完整收尾。',this.buildCtx(month));
     if(!msg){const sixcat=get6Cat(month);const topSix=SIX.reduce((a,b)=>(sixcat[a]||0)>(sixcat[b]||0)?a:b);msg=`## 💭 生活心理財務檢視\n\n咪嚕仔細看了你的消費，想說幾句悄悄話喵～\n\n### ⚖️ 生活重心分析\n\n這個月花最多在「**${topSix}**」（${fmt(sixcat[topSix]||0)}）。${SIX_Q[topSix]}\n\n---\n\n💌 財務是生活的鏡子，它反映你的優先級和渴望。不管現在狀況如何，你能認真對待財務，就是在好好照顧自己了 🐾 呼嚕呼嚕～`;}
-    this._rpts['life']=msg;rpOpen('💭 生活心理財務檢視','咪嚕的心理學觀察',msg);
+    this._rpts['life']=msg;this._rpts['life_title']='💭 生活心理財務檢視';this._rpts['life_sub']='咪嚕的心理學觀察';this._rpts['life_stats']='';rpOpen('💭 生活心理財務檢視','咪嚕的心理學觀察',msg);
     this.addMsg(rpBubble('心理檢視完成喵 💭','💭 生活心理財務檢視','咪嚕的心理學觀察','life'),'love');
   },
 
@@ -1085,7 +1086,7 @@ const CAT={
     let reply=await this.callAI(msg,this.buildCtx(thisMonth()));
     if(!reply)reply='喵～請先到系統設定儲存 Gemini API 金鑰，我才能讀懂妳的問題哦 🐾';
     // If reply is long, open report panel
-    if(reply.length>200){this._rpts['chat']=reply;rpOpen('💬 咪嚕的回覆','AI 分析',reply);this.addMsg(rpBubble('咪嚕回覆好囉 💬','💬 咪嚕的回覆','AI 分析','chat'),'normal');}
+    if(reply.length>200){this._rpts['chat']=reply;this._rpts['chat_title']='💬 咪嚕的回覆';this._rpts['chat_sub']='AI 分析';this._rpts['chat_stats']='';rpOpen('💬 咪嚕的回覆','AI 分析',reply);this.addMsg(rpBubble('咪嚕回覆好囉 💬','💬 咪嚕的回覆','AI 分析','chat'),'normal');}
     else this.addMsg(reply,'normal');
   },
 };
