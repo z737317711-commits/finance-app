@@ -306,6 +306,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
 /* ══ MOBILE RWD ADJUSTMENTS ══════════════════ */
 @media(max-width: 768px) {
   body { flex-direction: column; }
+  
   .sidebar { 
     width: 100%; min-width: 100%; height: 70px; flex-direction: row; 
     border-right: none; border-top: 1px solid rgba(255,255,255,0.08); 
@@ -313,12 +314,14 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
   }
   .logo-area, .sidebar-footer { display: none; }
+  
   .nav-list { 
     flex-direction: row; align-items: center; justify-content: flex-start; 
     padding: 0 10px; margin: 0; overflow-x: auto; overflow-y: hidden; 
     gap: 8px; width: 100%; -webkit-overflow-scrolling: touch; 
   }
   .nav-list::-webkit-scrollbar { display: none; }
+  
   .nav-item { flex-direction: column; padding: 6px 4px; min-width: 65px; border-radius: 12px; gap: 4px; justify-content: center; }
   .nav-item.nav-bottom { margin-top: 0; border-top: none; padding-top: 6px; }
   .nav-item span { display: block; font-size: 0.6rem; line-height: 1; text-align: center; margin-top: 2px;}
@@ -327,6 +330,8 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   .nav-icon { font-size: 1.2rem; width: 100%; text-align: center; }
   
   .main { order: 1; padding: 15px 12px; padding-bottom: 20px; }
+  
+  /* Modals RWD fix */
   .modal { padding: 22px 18px; width: 95%; max-width: 100%; margin: 0 auto; }
   .two-col { grid-template-columns: 1fr; gap: 10px; } 
   .alloc-env { grid-template-columns: 1fr; } 
@@ -335,9 +340,11 @@ tbody td{padding:10px 14px; vertical-align: middle;}
   
   .tabs { flex-wrap: wrap; }
   .frow select, .frow input { flex: 1; min-width: 100px; }
+  
   .cat-fab { bottom: 85px; right: 15px; width: 54px; height: 54px; }
   .cat-fab svg { width: 36px; height: 36px; }
   .cat-panel { width: calc(100vw - 30px); right: 15px; bottom: 150px; max-height: 60vh; }
+  
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .g2, .g3, .g4, .env-grid, .sixcat-grid, .mode-grid { grid-template-columns: 1fr; }
 }
@@ -371,7 +378,7 @@ tbody td{padding:10px 14px; vertical-align: middle;}
     <li class="nav-item" onclick="nav('review')"><span class="nav-icon">🕰️</span><span>時光回顧</span></li>
     <li class="nav-item nav-bottom" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>系統設定</span></li>
   </ul>
-  <div class="sidebar-footer">🔒 時光回顧版 v10.0 🌿</div>
+  <div class="sidebar-footer">🔒 穩定回顧版 v10.1 🌿</div>
 </nav>
 
 <main class="main">
@@ -427,35 +434,6 @@ tbody td{padding:10px 14px; vertical-align: middle;}
         </div>
       </div>
       <div class="card"><div class="card-title">🎯 月預算狀況</div><div id="bud-overview"></div></div>
-    </div>
-  </section>
-
-  <section id="page-review" class="page">
-    <div class="page-header">
-      <h1 class="page-title">🕰️ 時光回顧</h1>
-      <div style="font-size:.8rem;color:var(--text2);font-weight:600">檢視你的理財心路歷程與成長軌跡</div>
-    </div>
-
-    <div class="g2 mb6">
-      <div class="card">
-        <div class="card-title">🏆 咪嚕成就相簿</div>
-        <div id="review-album" style="text-align:center; padding:10px 0;">
-          </div>
-      </div>
-      <div class="card" style="background:linear-gradient(135deg, #F5EEE8, #E4D8C8); border-color:var(--terra3);">
-        <div class="card-title">🎉 年度 / 階段大回顧</div>
-        <div style="font-size:.8rem; color:var(--text); line-height:1.6; margin-bottom:16px; font-weight:600;">
-          想要知道你過去這段時間的理財亮點嗎？咪嚕會幫你統整出你最常在哪裡花錢、成功克制了幾次衝動，以及你的財務成長故事！
-        </div>
-        <button class="btn btn-p" style="width:100%; justify-content:center;" onclick="doWrapped()">✨ 請咪嚕幫我做理財大回顧</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">📖 財務反思日記牆</div>
-      <div style="font-size:.75rem; color:var(--text3); margin-bottom:10px; font-weight:600;">你曾經在「預算規劃」寫下的超支反思，與咪嚕給你的專屬建議都會收錄在這裡。</div>
-      <div id="review-diary" class="timeline">
-        </div>
     </div>
   </section>
 
@@ -623,6 +601,33 @@ tbody td{padding:10px 14px; vertical-align: middle;}
           <div id="empty-rep-bar-cat" class="empty" style="display:none;position:absolute;inset:0;"><span class="empty-icon">🌱</span>無支出資料</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="page-review" class="page">
+    <div class="page-header">
+      <h1 class="page-title">🕰️ 時光回顧</h1>
+      <div style="font-size:.8rem;color:var(--text2);font-weight:600">檢視你的理財心路歷程與成長軌跡</div>
+    </div>
+
+    <div class="g2 mb6">
+      <div class="card">
+        <div class="card-title">🏆 咪嚕成就相簿</div>
+        <div id="review-album" style="text-align:center; padding:10px 0;"></div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg, #F5EEE8, #E4D8C8); border-color:var(--terra3);">
+        <div class="card-title">🎉 年度 / 階段大回顧</div>
+        <div style="font-size:.8rem; color:var(--text); line-height:1.6; margin-bottom:16px; font-weight:600;">
+          想要知道你過去這段時間的理財亮點嗎？咪嚕會幫你統整出你最常在哪裡花錢、成功克制了幾次衝動，以及你的財務成長故事！
+        </div>
+        <button class="btn btn-p" style="width:100%; justify-content:center;" onclick="doWrapped()">✨ 請咪嚕幫我做理財大回顧</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📖 財務反思日記牆</div>
+      <div style="font-size:.75rem; color:var(--text3); margin-bottom:10px; font-weight:600;">你在「預算規劃」寫下的超支反思，與咪嚕給你的專屬建議都會收錄在這裡。</div>
+      <div id="review-diary" class="timeline"></div>
     </div>
   </section>
 
@@ -1111,7 +1116,7 @@ async function uploadToGas(){
 
 async function downloadFromGas(){
     if(!GAS_URL) { alert('⚠️ 請先在上方輸入並儲存 Google API 網址！'); return; }
-    showConfirm('這會用雲端資料【完全覆蓋】你目前的資料喔！確定嗎？', async () => {
+    showConfirm('這會用雲端資料【完全覆蓋】目前的資料喔！確定嗎？', async () => {
         toast('📥 正在從 Google 試算表下載...');
         try {
             const res = await fetch(GAS_URL);
@@ -1161,7 +1166,7 @@ function addExp(pts, reason) {
     }
     saveDB();
     if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
-    if(document.getElementById('page-review').classList.contains('active')) renderReview();
+    if(document.getElementById('page-review')?.classList.contains('active')) renderReview();
 }
 
 function openPrestigeModal() { openModal('m-prestige'); }
@@ -1180,7 +1185,8 @@ function doPrestige(choice) {
         toast('✨ 咪嚕進階轉生成功！難度提升！');
         CAT.addMsg('喵呼！感覺全身充滿了力量！未來的理財挑戰我也不怕了喵！', 'excited');
     }
-    saveDB(); closeModal('m-prestige'); renderDashboard(); renderReview();
+    saveDB(); closeModal('m-prestige'); renderDashboard(); 
+    if(document.getElementById('page-review')?.classList.contains('active')) renderReview();
 }
 
 const getCards = () => DB.cards.map(c => c.name);
@@ -1192,11 +1198,16 @@ const today = () => new Date().toISOString().slice(0,10);
 const thisMonth = () => new Date().toISOString().slice(0,7);
 const nowTime = () => new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
 
+// 防撞切換邏輯
 function nav(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
+  
+  const targetPage = document.getElementById('page-'+page);
+  if(targetPage) targetPage.classList.add('active');
+  
   document.querySelectorAll('.nav-item').forEach(n=>{ if(n.getAttribute('onclick')?.includes(`'${page}'`)) n.classList.add('active'); });
+  
   const renders = { dashboard:renderDashboard, transactions:renderTx, budget:renderBudgetPage, debt:renderDebt, reports:renderReports, review:renderReview, settings:renderSettings };
   renders[page]?.();
   updateGlobalSelects();
@@ -1891,6 +1902,77 @@ async function submitReflection(cat, overAmt, inputId) {
     addExp(10, '完成反思！');
 }
 
+// ── REVIEW PAGE (時光回顧) ──────────────────────────────────
+function renderReview() {
+    let currentLevel = DB.game.level;
+    let crown = "✨".repeat(DB.game.prestige);
+    let title = GAME_LEVELS[currentLevel-1].title;
+    
+    document.getElementById('review-album').innerHTML = `
+        <div style="font-size:3.5rem; margin-bottom:10px;">👑</div>
+        <div style="font-size:1.4rem; font-weight:900; color:var(--terra2); margin-bottom:5px;">${crown}${title}</div>
+        <div style="font-size:.85rem; color:var(--text2); font-weight:600; margin-bottom:15px;">目前等級 Lv.${currentLevel} • 累積 ${DB.game.exp} EXP</div>
+        <div style="display:flex; justify-content:center; gap:15px;">
+            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
+                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">轉生次數</div>
+                <div style="font-size:1.2rem; font-weight:900; color:var(--gold);">${DB.game.prestige} 次</div>
+            </div>
+            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
+                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">收編貓咪</div>
+                <div style="font-size:1.2rem; font-weight:900; color:var(--sage);">${DB.game.adopted} 隻</div>
+            </div>
+        </div>
+    `;
+
+    const diaryWrap = document.getElementById('review-diary');
+    if (!DB.reflections || DB.reflections.length === 0) {
+        diaryWrap.innerHTML = '<div class="empty" style="padding:40px 20px;"><span class="empty-icon">📖</span>尚未寫下任何反思<br><span style="font-size:.7rem;font-weight:500;margin-top:5px;">在「預算規劃」超支時寫下原因，這裡就會自動幫你存檔喔！</span></div>';
+        diaryWrap.style.borderLeft = 'none';
+        diaryWrap.style.paddingLeft = '0';
+    } else {
+        diaryWrap.style.borderLeft = '2px solid var(--terra3)';
+        diaryWrap.style.paddingLeft = '16px';
+        diaryWrap.innerHTML = [...DB.reflections].reverse().map(r => `
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-date">${r.date}</div>
+                <div class="tl-card">
+                    <div class="tl-title">關於「${r.cat}」超支 ${fmt(r.over)}</div>
+                    <div class="tl-user">「${r.text}」</div>
+                    <div class="tl-ai">🐱 ${r.reply}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+async function doWrapped() {
+    if(!CAT.apiKey) {
+        toast('請先到系統設定啟用 Gemini AI 喔！', 'err');
+        return;
+    }
+    if(!CAT.open) toggleCat();
+    
+    CAT.addMsg('咪嚕，幫我做一段專屬的「年度/階段理財大回顧」吧！ 🎉', 'normal', true);
+    CAT.showTyping();
+    await delay(1500);
+    CAT.hideTyping();
+    
+    const trends = getMonthlyTrends(6);
+    let totalSaved = trends.reduce((s, t) => s + (t.income - t.expense), 0);
+    let topExp = getExpByCat(thisMonth())[0] || {cat: '無', total: 0};
+    
+    const prompt = `請像 Spotify Wrapped 一樣，給我一段活潑、充滿故事性的「理財大回顧」。
+    資料：最近半年總結餘 ${fmt(totalSaved)}。這個月最愛花錢在 ${topExp.cat} (${fmt(topExp.total)})。
+    目前是「${GAME_LEVELS[DB.game.level-1].title}」等級。
+    請用貓咪咪嚕的語氣，肯定用戶的成長，並給予未來期許。大約 150 字，分段清晰。`;
+
+    let reply = await CAT.callAI(prompt, "這是回顧模式");
+    if(!reply) reply = '喵！回顧資料準備中出了點小錯，稍後再試試看！';
+    
+    CAT.addMsg(reply, 'excited');
+}
+
 // ── DEBT & CREDIT CARDS ──────────────────────────────
 function openCardModal(id=null) {
     const c = id ? DB.cards.find(x => x.id === id) : null;
@@ -2007,8 +2089,6 @@ function renderDebt(){
   if(count > 0){ summary.style.display='block'; summary.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800">🔴 尚未繳清共 ${count} 筆 (含信用卡)</span><span style="color:var(--rose);font-weight:900">總計待繳：${fmt(tr)}</span></div>`; } else summary.style.display='none';
 }
 
-// ── REPORTS ─────────────────────────────────────────
-let rCharts={}; let radarInst;
 function renderReports(){
   const month=document.getElementById('rep-month').value||thisMonth(); document.getElementById('rep-month').value=month;
   Object.values(rCharts).forEach(c=>c&&c.destroy&&c.destroy()); rCharts={};
@@ -2080,79 +2160,6 @@ function renderWeekly(month){
   let totRow='<tr><td>週合計</td>'; weeks.forEach(wk=>{ const amt=wk.reduce((s,day)=>s+Object.values(spendMap[day.date]||{}).reduce((a,b)=>a+b,0),0); const isW=wk.some(d=>d.dow===0||d.dow===6); totRow+=`<td class="${isW?'wknd-col':''}">${amt?fmtShort(amt):''}</td>`; }); const grand=Object.values(spendMap).reduce((s,o)=>s+Object.values(o).reduce((a,b)=>a+b,0),0); totRow+=`<td>${fmtShort(grand)}</td></tr>`;
   el.innerHTML=hdr+rows+totRow;
 }
-
-// ── REVIEW PAGE (時光回顧) ──────────────────────────────────
-function renderReview() {
-    let currentLevel = DB.game.level;
-    let crown = "✨".repeat(DB.game.prestige);
-    let title = GAME_LEVELS[currentLevel-1].title;
-    
-    document.getElementById('review-album').innerHTML = `
-        <div style="font-size:3.5rem; margin-bottom:10px;">👑</div>
-        <div style="font-size:1.4rem; font-weight:900; color:var(--terra2); margin-bottom:5px;">${crown}${title}</div>
-        <div style="font-size:.85rem; color:var(--text2); font-weight:600; margin-bottom:15px;">目前等級 Lv.${currentLevel} • 累積 ${DB.game.exp} EXP</div>
-        <div style="display:flex; justify-content:center; gap:15px;">
-            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
-                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">轉生次數</div>
-                <div style="font-size:1.2rem; font-weight:900; color:var(--gold);">${DB.game.prestige} 次</div>
-            </div>
-            <div style="background:var(--surface2); padding:10px 15px; border-radius:12px; border:1px solid var(--border);">
-                <div style="font-size:.7rem; color:var(--text3); font-weight:700;">收編貓咪</div>
-                <div style="font-size:1.2rem; font-weight:900; color:var(--sage);">${DB.game.adopted} 隻</div>
-            </div>
-        </div>
-    `;
-
-    const diaryWrap = document.getElementById('review-diary');
-    if (!DB.reflections || DB.reflections.length === 0) {
-        diaryWrap.innerHTML = '<div class="empty" style="padding:40px 20px;"><span class="empty-icon">📖</span>尚未寫下任何反思<br><span style="font-size:.7rem;font-weight:500;margin-top:5px;">在「預算規劃」超支時寫下原因，這裡就會自動幫你存檔喔！</span></div>';
-        diaryWrap.style.borderLeft = 'none';
-        diaryWrap.style.paddingLeft = '0';
-    } else {
-        diaryWrap.style.borderLeft = '2px solid var(--terra3)';
-        diaryWrap.style.paddingLeft = '16px';
-        diaryWrap.innerHTML = [...DB.reflections].reverse().map(r => `
-            <div class="tl-item">
-                <div class="tl-dot"></div>
-                <div class="tl-date">${r.date}</div>
-                <div class="tl-card">
-                    <div class="tl-title">關於「${r.cat}」超支 ${fmt(r.over)}</div>
-                    <div class="tl-user">「${r.text}」</div>
-                    <div class="tl-ai">🐱 ${r.reply}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-async function doWrapped() {
-    if(!CAT.apiKey) {
-        toast('請先到系統設定啟用 Gemini AI 喔！', 'err');
-        return;
-    }
-    if(!CAT.open) toggleCat();
-    
-    CAT.addMsg('咪嚕，幫我做一段專屬的「年度/階段理財大回顧」吧！ 🎉', 'normal', true);
-    CAT.showTyping();
-    await delay(1500);
-    CAT.hideTyping();
-    
-    // 整理半年內的數據給 AI
-    const trends = getMonthlyTrends(6);
-    let totalSaved = trends.reduce((s, t) => s + (t.income - t.expense), 0);
-    let topExp = getExpByCat(thisMonth())[0] || {cat: '無', total: 0};
-    
-    const prompt = `請像 Spotify Wrapped 一樣，給我一段活潑、充滿故事性的「理財大回顧」。
-    資料：最近半年總結餘 ${fmt(totalSaved)}。這個月最愛花錢在 ${topExp.cat} (${fmt(topExp.total)})。
-    目前是「${GAME_LEVELS[DB.game.level-1].title}」等級。
-    請用貓咪咪嚕的語氣，肯定用戶的成長，並給予未來期許。大約 150 字，分段清晰。`;
-
-    let reply = await CAT.callAI(prompt, "這是回顧模式");
-    if(!reply) reply = '喵！回顧資料準備中出了點小錯，稍後再試試看！';
-    
-    CAT.addMsg(reply, 'excited');
-}
-
 
 function renderSettings() {
   document.getElementById('gas-url').value = GAS_URL;
@@ -2353,7 +2360,7 @@ setTimeout(()=>{
   const h=new Date().getHours();
   const greet=h<5?'深夜了還在理財，記得休息喵 🌙':h<12?'早安喵！美好的一天從記帳開始 ☀️':h<18?'下午好！有什麼消費要記錄嗎 🌿':'晚上好！來看看今天的花費吧喵 🌙';
   const n=DB.transactions.length;
-  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v10.0 時光回顧版上線！去左側選單點開「時光回顧」看看吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 左側選單加入了全新的「時光回顧」頁面喔，快去看看你的專屬相簿和日記牆吧喵！`,'happy');
+  CAT.addMsg(n===0?`${greet}\n\n我是咪嚕，你的理財貓咪管家 🐾\n\n🎉 v10.1 穩定回顧版上線！去左側選單點開「時光回顧」看看吧！`:`${greet}\n\n咪嚕已幫你記著 ${n} 筆帳了 🐾\n\n💡 時光回顧功能的 bug 已經修復囉，快去看看你的專屬相簿和日記牆吧喵！`,'happy');
 },600);
 </script>
 </body>
