@@ -325,20 +325,30 @@ tbody td{padding:10px 14px;vertical-align:middle;}
         <button class="btn btn-g" onclick="renderDashboard()">更新</button>
       </div>
     </div>
-    <div class="card mb6" style="background:linear-gradient(135deg,#FDF5EC,#F5EEE8);border-color:var(--terra3);">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-          <div style="font-size:.75rem;font-weight:800;color:var(--terra);margin-bottom:4px;letter-spacing:.05em">👑 咪嚕養成計畫</div>
-          <div style="font-size:1.15rem;font-weight:900;color:var(--text)" id="game-title">載入中...</div>
-          <div style="font-size:.7rem;color:var(--text2);margin-top:2px;font-weight:600" id="game-status">日常記帳、繳清卡費都能獲得經驗值！</div>
+    <div class="card mb6" style="background:linear-gradient(135deg,#FDF5EC,#F5EEE8);border-color:var(--terra3);padding:22px;">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:20px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--surface);border:3px solid var(--terra2);display:flex;justify-content:center;align-items:center;flex-shrink:0;box-shadow:0 4px 16px rgba(184,114,58,0.25);">
+          <span style="font-size:2.5rem;">🐱</span>
         </div>
-        <div style="text-align:right;">
-          <div class="game-badge" id="game-level-badge">Lv.1</div>
-          <div style="font-size:.7rem;color:var(--text3);font-weight:700" id="game-adopted">🏠 貓咪後院：1 隻</div>
+        <div style="flex:1;">
+          <div style="font-size:.75rem;font-weight:800;color:var(--terra);margin-bottom:4px;letter-spacing:.05em">👑 咪嚕養成計畫</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--text)" id="game-title">載入中...</div>
+          <div style="font-size:.7rem;color:var(--text2);margin-top:2px;font-weight:600" id="game-status">日常記帳、繳清卡費都能獲得經驗值！</div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <div class="game-badge" id="game-level-badge" style="margin:0;">Lv.1</div>
+            <div style="font-size:.7rem;color:var(--text3);font-weight:700;background:var(--surface2);padding:3px 8px;border-radius:50px;" id="game-adopted">🏠 貓咪後院：1 隻</div>
+          </div>
         </div>
       </div>
-      <div class="prog-bg" style="height:10px;margin-top:12px;"><div class="prog-bar bg-exp" id="game-exp-bar" style="width:0%;height:10px;"></div></div>
-      <div class="game-stats"><span id="game-exp-text">0 / 50 EXP</span><span id="game-next-req">距離下一階：還差 50</span></div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:8px;">
+          <span id="game-exp-text">0 / 50 EXP</span>
+          <span id="game-next-req">距離下一階：還差 50</span>
+        </div>
+        <div class="prog-bg" style="height:14px;background:var(--surface3);border-radius:50px;position:relative;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+          <div class="prog-bar bg-exp" id="game-exp-bar" style="width:0%;height:14px;border-radius:50px;"></div>
+        </div>
+      </div>
     </div>
     <div class="stat-grid" id="stat-grid"></div>
     <div class="g2 mb6">
@@ -354,9 +364,16 @@ tbody td{padding:10px 14px;vertical-align:middle;}
   <section id="page-transactions" class="page">
     <div class="page-header">
       <h1 class="page-title">📒 收支記帳</h1>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-p" onclick="openTxModal()">＋ 新增交易</button>
         <button class="btn btn-g" onclick="openPeriodicModal()">＋ 週期/訂閱</button>
+        <button class="btn btn-g" id="btn-batch-mode" onclick="toggleBatchMode()">☑️ 批次操作</button>
+        <div id="batch-actions" style="display:none;gap:6px;">
+          <button class="btn btn-g btn-sm" onclick="batchSelectAll()">全選</button>
+          <button class="btn btn-g btn-sm" onclick="batchSelectNone()">取消全選</button>
+          <button class="btn btn-d" onclick="batchDelete()">🗑 刪除勾選</button>
+          <button class="btn btn-g" onclick="toggleBatchMode()">✕ 結束</button>
+        </div>
       </div>
     </div>
     <div class="frow">
@@ -369,7 +386,7 @@ tbody td{padding:10px 14px;vertical-align:middle;}
     </div>
     <div class="sbar" id="tx-sbar"></div>
     <div class="tbl-wrap">
-      <table><thead><tr><th>日期</th><th>類型</th><th>明細項目</th><th>金額</th><th>備註</th><th>操作</th></tr></thead>
+      <table><thead><tr><th id="th-check" style="width:36px;display:none"><input type="checkbox" id="check-all" onchange="batchToggleAll(this.checked)" style="width:auto;cursor:pointer"></th><th>日期</th><th>類型</th><th>明細項目</th><th>金額</th><th>備註</th><th>操作</th></tr></thead>
       <tbody id="tx-tbody"></tbody></table>
     </div>
   </section>
@@ -832,6 +849,35 @@ function setTxType(type){curType=type;document.getElementById('tab-e').classList
 function openTxModal(id=null){const tx=id?DB.transactions.find(t=>t.id===id):null;document.getElementById('tx-id').value=id||'';document.getElementById('m-tx-title').textContent=id?'✏️ 編輯交易記錄':'✏️ 新增交易記錄';document.getElementById('tx-date').value=tx?tx.date:today();document.getElementById('tx-amt').value=tx?tx.amount:'';document.getElementById('tx-note').value=tx?tx.note:'';setTxType(tx?tx.type:'expense');if(tx)setTimeout(()=>{document.getElementById('tx-cat').value=tx.cat;document.getElementById('tx-payMethod').value=tx.payMethod||'現金';if(tx.type==='expense'||tx.type==='income')updateSubcats(tx.subcat);},10);openModal('m-tx');}
 function saveTx(){const date=document.getElementById('tx-date').value,amount=parseFloat(document.getElementById('tx-amt').value),cat=document.getElementById('tx-cat').value,subcat=curType==='card_payment'?null:document.getElementById('tx-subcat').value,payMethod=document.getElementById('tx-payMethod').value,note=document.getElementById('tx-note').value.trim(),idVal=document.getElementById('tx-id').value;if(!date||!amount||amount<=0){toast('請確認日期和金額','err');return;}const tx={date,type:curType,cat,subcat,amount,note,payMethod};if(idVal){const t=DB.transactions.find(t=>t.id===parseInt(idVal));if(t)Object.assign(t,tx);}else{tx.id=nextId(DB.transactions);DB.transactions.push(tx);}saveDB();closeModal('m-tx');renderTx();const todayStr=today();if(curType==='card_payment'){addExp(30,'繳清卡費！財務壓力減輕');}else{if(DB.game.lastTxDate!==todayStr){addExp(10,'日常理財打卡');DB.game.lastTxDate=todayStr;}else{toast('已儲存 ✓');}if(Math.random()<0.1)setTimeout(()=>{addExp(50,'🎉 暴擊！咪嚕在沙發下翻到一枚金幣');},1200);}if(curType!=='card_payment')CAT.reactToTx(tx);}
 function deleteTx(id){showConfirm('確定要刪除這筆紀錄嗎？',()=>{DB.transactions=DB.transactions.filter(t=>t.id!==id);saveDB();toast('已刪除');renderTx();});}
+let _batchMode=false;
+function toggleBatchMode(){
+  _batchMode=!_batchMode;
+  const btn=document.getElementById('btn-batch-mode');
+  const actions=document.getElementById('batch-actions');
+  const thCheck=document.getElementById('th-check');
+  if(_batchMode){
+    btn.classList.add('active');btn.style.background='var(--terra)';btn.style.color='white';btn.textContent='☑️ 批次模式開啟';
+    actions.style.display='flex';if(thCheck)thCheck.style.display='table-cell';
+  } else {
+    btn.classList.remove('active');btn.style.background='';btn.style.color='';btn.textContent='☑️ 批次操作';
+    actions.style.display='none';if(thCheck)thCheck.style.display='none';
+    const ca=document.getElementById('check-all');if(ca)ca.checked=false;
+  }
+  renderTx();
+}
+function batchToggleAll(checked){document.querySelectorAll('.batch-chk').forEach(cb=>cb.checked=checked);}
+function batchSelectAll(){document.querySelectorAll('.batch-chk').forEach(cb=>cb.checked=true);const ca=document.getElementById('check-all');if(ca)ca.checked=true;}
+function batchSelectNone(){document.querySelectorAll('.batch-chk').forEach(cb=>cb.checked=false);const ca=document.getElementById('check-all');if(ca)ca.checked=false;}
+function batchDelete(){
+  const ids=[...document.querySelectorAll('.batch-chk:checked')].map(cb=>parseInt(cb.dataset.id));
+  if(!ids.length){toast('請先勾選要刪除的項目','err');return;}
+  showConfirm(`確定要刪除勾選的 <strong>${ids.length}</strong> 筆記錄嗎？`,()=>{
+    DB.transactions=DB.transactions.filter(t=>!ids.includes(t.id));
+    saveDB();toast(`已刪除 ${ids.length} 筆 ✓`);
+    const ca=document.getElementById('check-all');if(ca)ca.checked=false;
+    renderTx();
+  });
+}
 
 function updatePSubcats(){const cat=document.getElementById('p-cat').value;const subs=DB.categories.expense[cat]?.subcats||[];document.getElementById('p-subcat').innerHTML=subs.map(s=>`<option value="${s}">${s}</option>`).join('')||'<option value="">無</option>';}
 function openPeriodicModal(){document.getElementById('p-date').value=today();document.getElementById('p-amt').value='';document.getElementById('p-cat').innerHTML=Object.keys(DB.categories.expense).map(c=>`<option value="${c}">${c}</option>`).join('');document.getElementById('p-payMethod').innerHTML=[...DB.payMethods,...getCards()].map(m=>`<option value="${m}">${m}</option>`).join('');document.getElementById('p-item').value='Netflix 訂閱費';checkPeriodicCustom();openModal('m-periodic');}
@@ -839,7 +885,63 @@ function checkPeriodicCustom(){const v=document.getElementById('p-item').value;d
 function savePeriodic(){const itemSel=document.getElementById('p-item').value;const name=itemSel==='custom'?document.getElementById('p-item-custom').value.trim():itemSel;const cat=document.getElementById('p-cat').value,subcat=document.getElementById('p-subcat').value,payMethod=document.getElementById('p-payMethod').value,mode=document.getElementById('p-mode').value,startStr=document.getElementById('p-date').value,amt=parseFloat(document.getElementById('p-amt').value);if(!name||!startStr||!amt||amt<=0){toast('請完整填寫資料','err');return;}let startDate=new Date(startStr),txsToAdd=[],baseId=nextId(DB.transactions);if(mode==='once'||mode==='annual_once'){txsToAdd.push({id:baseId,date:startStr,type:'expense',cat,subcat,amount:amt,payMethod,note:name+(mode==='annual_once'?' (年繳)':'')});}else if(mode==='monthly_1yr'){for(let i=0;i<12;i++){let d=new Date(startDate);d.setMonth(d.getMonth()+i);txsToAdd.push({id:baseId+i,date:d.toISOString().slice(0,10),type:'expense',cat,subcat,amount:amt,payMethod,note:`${name} (第${i+1}/12期)`});}}DB.transactions.push(...txsToAdd);saveDB();closeModal('m-periodic');toast(`已成功新增 ${txsToAdd.length} 筆紀錄 ✓`);renderTx();}
 
 window.currentRecData=[];
-function processReconcile(){const card=document.getElementById('rec-card').value,text=document.getElementById('rec-input').value.trim();if(!text){toast('請貼上帳單內容','err');return;}const rawLines=text.split('\n'),txLines=[];const dateStartRegex=/^(?:1\d{2}|20\d{2})[\/\-]\d{1,2}[\/\-]\d{1,2}/;rawLines.forEach(line=>{if(dateStartRegex.test(line.trim())){txLines.push(line.trim());}else if(txLines.length>0){txLines[txLines.length-1]+=' '+line.trim();}});let parsed=[];txLines.forEach((line,idx)=>{const dates=line.match(/(?:1\d{2}|20\d{2})[\/\-]\d{1,2}[\/\-]\d{1,2}/g);if(!dates)return;let dStr=dates[0];let[y,m,d]=dStr.split(/[\/\-]/);if(y.length===3)y=parseInt(y)+1911;dStr=`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;let noDateLine=line.replace(/(?:1\d{2}|20\d{2})[\/\-]\d{1,2}[\/\-]\d{1,2}/g,'').trim();let cleanForAmt=noDateLine.replace(/(第?\d{1,2}\/\d{1,2}期|卡號末四碼:?\s*\d+|TW|NT\$|TWD)/gi,'');const nums=cleanForAmt.match(/-?\d{1,3}(?:,\d{3})*(?:\.\d+)?/g);if(!nums)return;let amt=parseFloat(nums[nums.length-1].replace(/,/g,''));let isPayment=amt<0||noDateLine.includes('繳款')||noDateLine.includes('自動扣款');if(amt<0)amt=Math.abs(amt);if(amt===0)return;let desc=noDateLine.replace(nums[nums.length-1],'').replace(/[,]/g,'').trim().replace(/[\t\s]+/g,' ');parsed.push({id:'rec_'+idx,date:dStr,desc:desc,amt:amt,isPayment:isPayment});});if(parsed.length===0){toast('無法辨識，請確認包含日期與金額','err');return;}const dbTxs=DB.transactions.filter(t=>t.payMethod===card||(t.type==='card_payment'&&t.cat===card));let html='',matchCount=0,newCount=0;window.currentRecData=[];const catOpts=Object.keys(DB.categories.expense).map(c=>`<option value="${c}">${c}</option>`).join('');parsed.forEach(p=>{const pTime=new Date(p.date).getTime();const match=dbTxs.find(t=>{if(t.amount!==p.amt)return false;const tTime=new Date(t.date).getTime();return Math.abs(tTime-pTime)/86400000<=3;});if(match){matchCount++;html+=`<tr style="opacity:0.6;background:var(--surface)"><td style="text-align:center">—</td><td>${p.date}</td><td><div style="font-size:0.75rem">${p.desc.substring(0,18)}</div></td><td class="${p.isPayment?'amt-neu':'amt-out'}">${fmt(p.amt)}</td><td><span class="badge badge-i">✅ 已記錄</span></td><td><span style="font-size:0.7rem;color:var(--text3)">系統: ${match.cat}${match.subcat?' ❯ '+match.subcat:''}</span></td></tr>`;}else{newCount++;window.currentRecData.push(p);let defaultCatHtml=catOpts;if(!p.isPayment&&p.desc.includes('利息'))defaultCatHtml=defaultCatHtml.replace('value="其他支出"','value="其他支出" selected');html+=`<tr><td style="text-align:center"><input type="checkbox" id="chk_${p.id}" checked></td><td><input type="date" id="date_${p.id}" value="${p.date}" style="padding:2px;font-size:0.75rem;width:105px"></td><td><input type="text" id="desc_${p.id}" value="${p.desc.substring(0,25)}" style="padding:4px;font-size:0.75rem;width:130px"></td><td class="${p.isPayment?'amt-neu':'amt-out'}">${fmt(p.amt)}</td><td><span class="badge badge-e">⚠️ 待處理</span></td><td style="display:flex;gap:4px;flex-direction:column;">${p.isPayment?`<span style="color:var(--sky);font-weight:700;font-size:0.75rem;">💳 系統判定為繳納</span><select id="payAcc_${p.id}" style="padding:4px;font-size:0.75rem;">${DB.payMethods.map(m=>`<option value="${m}">從 [${m}] 扣款</option>`).join('')}</select>`:`<select id="cat_${p.id}" style="padding:4px;font-size:0.75rem;" onchange="updateRecSubcat('${p.id}')">${defaultCatHtml}</select><select id="subcat_${p.id}" style="padding:4px;font-size:0.75rem;"><option value="">無</option></select>`}</td></tr>`;}});document.getElementById('rec-tbody').innerHTML=html;document.getElementById('rec-summary').innerHTML=`<span>解析共 <strong>${parsed.length}</strong> 筆</span><span style="color:var(--border)">•</span><span class="si">✅ 已記錄 ${matchCount} 筆</span><span style="color:var(--border)">•</span><span class="se">⚠️ 待處理 ${newCount} 筆</span>`;document.getElementById('rec-result-area').style.display='block';window.currentRecData.forEach(p=>{if(!p.isPayment){let sub=p.desc.includes('利息')?'分期/延遲利息':'';updateRecSubcat(p.id,sub);}});toast('帳單解析完成！');}
+function processReconcile(){const card=document.getElementById('rec-card').value,text=document.getElementById('rec-input').value.trim();if(!text){toast('請貼上帳單內容','err');return;}
+  const nowY=new Date().getFullYear(),nowM=new Date().getMonth()+1;
+  const fullDateRx=/(?:1\d{2}|20\d{2})[\/-]\d{1,2}[\/-]\d{1,2}/;
+  const shortDateRx=/^\d{2}\/\d{2}\b/;
+  const skipRx=/上期帳單|繳款小計|本期消費|本期應繳|正卡|附卡|消費日|入帳日|起息日|交易說明|幣別|卡號|行動卡號/;
+  const specialRx=/^(循環利息|違約金|年費|手續費)/;
+  const rawLines=text.split('\n');
+  const txLines=[];
+  let lastDate='';
+  rawLines.forEach(line=>{
+    const t=line.trim();
+    if(!t||skipRx.test(t))return;
+    if(fullDateRx.test(t)||shortDateRx.test(t)){
+      txLines.push(t);
+      const dm=t.match(/^(\d{2}\/\d{2})/);if(dm)lastDate=dm[1];
+    } else if(specialRx.test(t)){
+      txLines.push((lastDate?lastDate+' ':'')+t);
+    } else if(txLines.length>0){
+      txLines[txLines.length-1]+=' '+t;
+    }
+  });
+  let parsed=[];
+  txLines.forEach((line,idx)=>{
+    const isInterest=line.includes('循環利息');
+    const isPenalty=line.includes('違約金');
+    const isDiscount=line.includes('折抵')||line.includes('退刷')||line.includes('退款');
+    let dStr='';
+    const fullMatch=line.match(/(?:1\d{2}|20\d{2})[\/-]\d{1,2}[\/-]\d{1,2}/);
+    if(fullMatch){
+      let[y,mo,dy]=fullMatch[0].split(/[\/\-]/);
+      if(y.length===3)y=parseInt(y)+1911;
+      dStr=`${y}-${mo.padStart(2,'0')}-${dy.padStart(2,'0')}`;
+    } else {
+      const sm=line.match(/^(\d{2})\/(\d{2})/);
+      if(!sm)return;
+      const mo=parseInt(sm[1]),dy=parseInt(sm[2]);
+      const yr=(mo>nowM+1)?nowY-1:nowY;
+      dStr=`${yr}-${String(mo).padStart(2,'0')}-${String(dy).padStart(2,'0')}`;
+    }
+    let clean=line
+      .replace(/(?:1\d{2}|20\d{2})[\/-]\d{1,2}[\/-]\d{1,2}/g,'')
+      .replace(/^\d{2}\/\d{2}\s+\d{2}\/\d{2}/,'')
+      .replace(/^\d{2}\/\d{2}/,'')
+      .replace(/\b\d{4}\b/g,' ')
+      .replace(/\bTW\b|\bTWD\b/gi,' ')
+      .trim();
+    const nums=clean.match(/-?\d{1,3}(?:,\d{3})*(?:\.\d+)?/g);
+    if(!nums)return;
+    let amt=parseFloat(nums[nums.length-1].replace(/,/g,''));
+    const isRefund=amt<0&&isDiscount;
+    const isPayment=(amt<0&&!isDiscount&&!isInterest)||line.includes('轉帳繳款')||line.includes('自動扣款');
+    if(amt<0)amt=Math.abs(amt);
+    if(amt===0)return;
+    let desc=clean.replace(nums[nums.length-1],'').replace(/[,，]/g,'').replace(/\s+/g,' ').trim();
+    if(!desc||desc.length<2){if(isInterest)desc='循環利息';else if(isPenalty)desc='違約金';else desc='消費';}
+    parsed.push({id:'rec_'+idx,date:dStr,desc:desc.substring(0,30),amt:amt,isPayment:isPayment,isRefund:isRefund,isInterest:isInterest,isPenalty:isPenalty});
+  });if(parsed.length===0){toast('無法辨識，請確認包含日期與金額','err');return;}const dbTxs=DB.transactions.filter(t=>t.payMethod===card||(t.type==='card_payment'&&t.cat===card));let html='',matchCount=0,newCount=0;window.currentRecData=[];const catOpts=Object.keys(DB.categories.expense).map(c=>`<option value="${c}">${c}</option>`).join('');parsed.forEach(p=>{const pTime=new Date(p.date).getTime();const match=dbTxs.find(t=>{if(t.amount!==p.amt)return false;const tTime=new Date(t.date).getTime();return Math.abs(tTime-pTime)/86400000<=3;});if(match){matchCount++;html+=`<tr style="opacity:0.6;background:var(--surface)"><td style="text-align:center">—</td><td>${p.date}</td><td><div style="font-size:0.75rem">${p.desc.substring(0,18)}</div></td><td class="${p.isPayment?'amt-neu':'amt-out'}">${fmt(p.amt)}</td><td><span class="badge badge-i">✅ 已記錄</span></td><td><span style="font-size:0.7rem;color:var(--text3)">系統: ${match.cat}${match.subcat?' ❯ '+match.subcat:''}</span></td></tr>`;}else{newCount++;window.currentRecData.push(p);let defaultCatHtml=catOpts;if(p.isInterest||p.isPenalty||(!p.isPayment&&!p.isRefund&&p.desc.includes('利息')))defaultCatHtml=defaultCatHtml.replace('value="其他支出"','value="其他支出" selected');const rowType=p.isPayment?'amt-neu':p.isRefund?'amt-in':'amt-out';const rowLabel=p.isRefund?'↩️ 退刷/折扣':'⚠️ 待處理';html+=`<tr><td style="text-align:center"><input type="checkbox" id="chk_${p.id}" checked></td><td><input type="date" id="date_${p.id}" value="${p.date}" style="padding:2px;font-size:0.75rem;width:105px"></td><td><input type="text" id="desc_${p.id}" value="${p.desc.substring(0,25)}" style="padding:4px;font-size:0.75rem;width:130px"></td><td class="${rowType}">${p.isRefund?'+':p.isPayment?'':'-'}${fmt(p.amt)}</td><td><span class="badge ${p.isRefund?'badge-i':'badge-e'}">${rowLabel}</span></td><td style="display:flex;gap:4px;flex-direction:column;">${p.isPayment?`<span style="color:var(--sky);font-weight:700;font-size:0.75rem;">💳 系統判定為繳納</span><select id="payAcc_${p.id}" style="padding:4px;font-size:0.75rem;">${DB.payMethods.map(m=>`<option value="${m}">從 [${m}] 扣款</option>`).join('')}</select>`:`<select id="cat_${p.id}" style="padding:4px;font-size:0.75rem;" onchange="updateRecSubcat('${p.id}')">${defaultCatHtml}</select><select id="subcat_${p.id}" style="padding:4px;font-size:0.75rem;"><option value="">無</option></select>`}</td></tr>`;}});document.getElementById('rec-tbody').innerHTML=html;document.getElementById('rec-summary').innerHTML=`<span>解析共 <strong>${parsed.length}</strong> 筆</span><span style="color:var(--border)">•</span><span class="si">✅ 已記錄 ${matchCount} 筆</span><span style="color:var(--border)">•</span><span class="se">⚠️ 待處理 ${newCount} 筆</span>`;document.getElementById('rec-result-area').style.display='block';window.currentRecData.forEach(p=>{if(!p.isPayment){let sub=p.desc.includes('利息')?'分期/延遲利息':'';updateRecSubcat(p.id,sub);}});toast('帳單解析完成！');}
 function updateRecSubcat(id,forceSelected=''){const cs=document.getElementById('cat_'+id);if(!cs)return;const subs=DB.categories.expense[cs.value]?.subcats||[];const ss=document.getElementById('subcat_'+id);ss.innerHTML=subs.map(s=>`<option value="${s}">${s}</option>`).join('')||'<option value="">無</option>';if(forceSelected&&subs.includes(forceSelected))ss.value=forceSelected;}
 function importReconciled(){const card=document.getElementById('rec-card').value;let added=0,hasPayment=false;window.currentRecData.forEach(p=>{const chk=document.getElementById('chk_'+p.id);if(chk&&chk.checked){const finalDate=document.getElementById('date_'+p.id).value,finalDesc=document.getElementById('desc_'+p.id).value.trim();if(p.isPayment){const pm=document.getElementById('payAcc_'+p.id).value;DB.transactions.push({id:nextId(DB.transactions),date:finalDate,type:'card_payment',cat:card,subcat:null,amount:p.amt,note:finalDesc,payMethod:pm});hasPayment=true;}else{const cat=document.getElementById('cat_'+p.id).value,subcat=document.getElementById('subcat_'+p.id).value;DB.transactions.push({id:nextId(DB.transactions),date:finalDate,type:'expense',cat,subcat,amount:p.amt,note:finalDesc,payMethod:card});}added++;}});if(added>0){saveDB();document.getElementById('rec-result-area').style.display='none';document.getElementById('rec-input').value='';renderTx();if(hasPayment)addExp(30,'繳清卡費！財務壓力減輕');else addExp(15,'認真核對帳單');}else toast('沒有勾選任何待處理的項目','err');}
 
@@ -894,13 +996,77 @@ function renderTx(){
   document.getElementById('tx-sbar').innerHTML=`<span>共 <strong>${txs.length}</strong> 筆</span><span style="color:var(--border)">•</span><span class="si">↑ ${fmt(tI)}</span><span style="color:var(--border)">•</span><span class="se">↓ ${fmt(tO)}</span><span style="color:var(--border)">•</span><span class="sb">＝ ${fmt(tI-tO)}</span>`;
   const tb=document.getElementById('tx-tbody');
   if(!txs.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:36px;font-weight:500">🌱 無符合記錄</td></tr>`;return;}
-  tb.innerHTML=txs.map(t=>{let typeBadge,amtClass,amtPrefix;if(t.type==='income'){typeBadge='<span class="badge badge-i">💰 收入</span>';amtClass='amt-in';amtPrefix='+';}else if(t.type==='expense'){typeBadge='<span class="badge badge-e">💸 支出</span>';amtClass='amt-out';amtPrefix='−';}else{typeBadge='<span class="badge badge-c">💳 繳費</span>';amtClass='amt-neu';amtPrefix='';}let catDisplay=`<span style="font-weight:700">${t.cat}</span>`;if(t.type==='expense'&&t.subcat)catDisplay+=` <span style="font-size:0.7rem;color:var(--text3);font-weight:600">❯ ${t.subcat}</span>`;catDisplay+=`<br><span class="pay-tag">${t.type==='card_payment'?'從 ':''} ${t.payMethod}${t.type==='card_payment'?' 扣繳':' 支付'}</span>`;return`<tr><td style="color:var(--text2);font-size:.79rem;font-weight:500">${t.date}</td><td>${typeBadge}</td><td>${catDisplay}</td><td class="${amtClass}">${amtPrefix}${fmt(t.amount)}</td><td style="color:var(--text2);font-size:.79rem">${t.note||'—'}</td><td style="display:flex;gap:5px"><button class="btn btn-g btn-sm" onclick="openTxModal(${t.id})">編輯</button><button class="btn btn-d btn-sm" onclick="deleteTx(${t.id})">刪</button></td></tr>`;}).join('');
+  const batchMode=document.getElementById('btn-batch-mode')?.classList.contains('active')||false;
+  tb.innerHTML=txs.map(t=>{let typeBadge,amtClass,amtPrefix;if(t.type==='income'){typeBadge='<span class="badge badge-i">💰 收入</span>';amtClass='amt-in';amtPrefix='+';}else if(t.type==='expense'){typeBadge='<span class="badge badge-e">💸 支出</span>';amtClass='amt-out';amtPrefix='−';}else{typeBadge='<span class="badge badge-c">💳 繳費</span>';amtClass='amt-neu';amtPrefix='';}let catDisplay=`<span style="font-weight:700">${t.cat}</span>`;if(t.type==='expense'&&t.subcat)catDisplay+=` <span style="font-size:0.7rem;color:var(--text3);font-weight:600">❯ ${t.subcat}</span>`;catDisplay+=`<br><span class="pay-tag">${t.type==='card_payment'?'從 ':''} ${t.payMethod}${t.type==='card_payment'?' 扣繳':' 支付'}</span>`;const chkCell=`<td class="batch-chk-cell" style="display:${batchMode?'table-cell':'none'};width:36px;text-align:center"><input type="checkbox" class="batch-chk" data-id="${t.id}" style="width:auto;cursor:pointer"></td>`;return`<tr data-id="${t.id}">${chkCell}<td style="color:var(--text2);font-size:.79rem;font-weight:500">${t.date}</td><td>${typeBadge}</td><td>${catDisplay}</td><td class="${amtClass}">${amtPrefix}${fmt(t.amount)}</td><td style="color:var(--text2);font-size:.79rem">${t.note||'—'}</td><td style="display:flex;gap:5px"><button class="btn btn-g btn-sm" onclick="openTxModal(${t.id})">編輯</button><button class="btn btn-d btn-sm" onclick="deleteTx(${t.id})">刪</button></td></tr>`;}).join('');
 }
 
 // ── BUDGET PAGE ───────────────────────────────
 function renderBudgetPage(){renderModeSummary();renderEnvelopes();renderBudget();}
 function renderModeSummary(){const month=document.getElementById('bud-month').value||thisMonth();const mode=getCurrentMode(month),{inc,exp}=getMonthlySummary(month);const sr=inc>0?((inc-exp)/inc*100).toFixed(1):0;const mc={'survival':'#5E9478','life':'#C09030','wealth':'#8070A8'};document.getElementById('mode-current').innerHTML=`<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><div style="flex:1"><div style="font-size:.72rem;color:var(--text2);font-weight:700;margin-bottom:5px">💡 目前財務狀態判定</div><div style="font-size:1.25rem;font-weight:900">${mode.name}</div><div style="font-size:.8rem;color:var(--text2);margin-top:5px;line-height:1.6;font-weight:500">${mode.desc}</div></div><div style="text-align:center;flex-shrink:0"><div style="font-size:1.9rem;font-weight:900;color:${mc[mode.key]}">${sr}%</div><div style="font-size:.7rem;color:var(--text2);font-weight:600">本月實際儲蓄率</div></div></div><div style="margin-top:12px;padding:11px 13px;background:var(--surface2);border-radius:var(--rs);font-size:.8rem;font-weight:600;color:var(--text);border-left:3px solid var(--terra)">💌 系統建議：理想分配比例為 固定 ${mode.fixed}% · 變動 ${mode.variable}% · 儲蓄 ${mode.save}%。<br>${mode.advice}</div>`;}
-function openAllocModal(){const month=document.getElementById('bud-month').value||thisMonth();const{inc}=getMonthlySummary(month);const mode=getCurrentMode(month);const existing=getAllocForMonth(month);document.getElementById('alloc-mode-hint').innerHTML=`套用 <strong>${mode.name}</strong> 建議比例：固定 ${mode.fixed}% · 變動 ${mode.variable}%`;document.getElementById('alloc-total-income').textContent=fmt(inc);const needInc=inc>0;document.getElementById('alloc-env-inputs').innerHTML=SIX.map((cat,i)=>{const suggested=existing?(existing.amounts[cat]||0):(needInc?Math.round(inc*(i<3?mode.fixed/300:mode.variable/300)):0);return`<div class="alloc-item"><div class="alloc-label" style="color:${SIX_COLORS[i]}">${SIX_ICONS[i]} ${cat}</div><input class="alloc-input" type="number" id="alloc-${i}" value="${suggested}" min="0" oninput="updateAllocTotals()"></div>`;}).join('');updateAllocTotals();openModal('m-alloc');}
+function openAllocModal(){
+  const month=document.getElementById('bud-month').value||thisMonth();
+  const{inc}=getMonthlySummary(month);
+  const mode=getCurrentMode(month);
+  const existing=getAllocForMonth(month);
+
+  // 細項預算加總到各大信封
+  const budSumByEnv={};SIX.forEach(s=>budSumByEnv[s]=0);
+  DB.budgets.filter(b=>b.type==='monthly'&&b.period===month).forEach(b=>{
+    const env=cat2six(b.cat);budSumByEnv[env]=(budSumByEnv[env]||0)+b.limit_;
+  });
+  const year=month.slice(0,4);
+  DB.budgets.filter(b=>b.type==='annual'&&b.period===year).forEach(b=>{
+    const env=cat2six(b.cat);budSumByEnv[env]=(budSumByEnv[env]||0)+Math.round(b.limit_/12);
+  });
+  const hasBudget=Object.values(budSumByEnv).some(v=>v>0);
+
+  document.getElementById('alloc-mode-hint').innerHTML=
+    `套用 <strong>${mode.name}</strong> 建議比例：固定 ${mode.fixed}% · 變動 ${mode.variable}%`+
+    (hasBudget?` <span style="color:var(--sage);font-size:.75rem;font-weight:700">・已套用細項預算加總</span>`:'')+
+    (existing?` <button class="btn btn-g btn-sm" style="margin-left:8px;font-size:.7rem" onclick="recalcAlloc()">🔄 依新收入重算</button>`:'');
+
+  document.getElementById('alloc-total-income').textContent=fmt(inc);
+  const needInc=inc>0;
+
+  document.getElementById('alloc-env-inputs').innerHTML=SIX.map((cat,i)=>{
+    // 比例計算
+    const byProp=needInc?Math.round(inc*(i<3?mode.fixed/300:mode.variable/300)):0;
+    // 細項加總
+    const byBudget=budSumByEnv[cat]||0;
+    // 建議值 = 若有細項則取 max，若已有分配則用舊值
+    const suggested=existing?(existing.amounts[cat]||0):Math.max(byProp,byBudget);
+    const hint=byBudget>0&&!existing?`<span style="font-size:.63rem;color:var(--text3);font-weight:500;margin-left:4px">(細項 ${fmt(byBudget)})</span>`:'';
+    return`<div class="alloc-item">
+      <div class="alloc-label" style="color:${SIX_COLORS[i]}">${SIX_ICONS[i]} ${cat}${hint}</div>
+      <input class="alloc-input" type="number" id="alloc-${i}" value="${suggested}" min="0" oninput="updateAllocTotals()">
+    </div>`;
+  }).join('');
+  updateAllocTotals();openModal('m-alloc');
+}
+
+// 依當前收入重新計算（有舊分配時用）
+function recalcAlloc(){
+  const month=document.getElementById('bud-month').value||thisMonth();
+  const{inc}=getMonthlySummary(month);
+  const mode=getCurrentMode(month);
+  const needInc=inc>0;
+  const budSumByEnv={};SIX.forEach(s=>budSumByEnv[s]=0);
+  DB.budgets.filter(b=>b.type==='monthly'&&b.period===month).forEach(b=>{
+    const env=cat2six(b.cat);budSumByEnv[env]=(budSumByEnv[env]||0)+b.limit_;
+  });
+  const year=month.slice(0,4);
+  DB.budgets.filter(b=>b.type==='annual'&&b.period===year).forEach(b=>{
+    const env=cat2six(b.cat);budSumByEnv[env]=(budSumByEnv[env]||0)+Math.round(b.limit_/12);
+  });
+  SIX.forEach((cat,i)=>{
+    const byProp=needInc?Math.round(inc*(i<3?mode.fixed/300:mode.variable/300)):0;
+    const byBudget=budSumByEnv[cat]||0;
+    const el=document.getElementById('alloc-'+i);
+    if(el)el.value=Math.max(byProp,byBudget);
+  });
+  updateAllocTotals();
+  toast('已依新收入重新計算 ✓');
+}
 function updateAllocTotals(){const month=document.getElementById('bud-month').value||thisMonth();const{inc}=getMonthlySummary(month);const assigned=SIX.reduce((s,_,i)=>s+(parseFloat(document.getElementById(`alloc-${i}`)?.value)||0),0);const remaining=inc-assigned;document.getElementById('alloc-assigned').textContent=fmt(assigned);document.getElementById('alloc-remaining').textContent=fmt(remaining);document.getElementById('alloc-remaining').style.color=remaining>=0?'var(--sage)':'var(--rose)';}
 function saveAlloc(){const month=document.getElementById('bud-month').value||thisMonth();const amounts={};SIX.forEach((cat,i)=>{amounts[cat]=parseFloat(document.getElementById(`alloc-${i}`)?.value)||0;});const existing=DB.allocations.findIndex(a=>a.month===month);if(existing>=0)DB.allocations[existing]={month,amounts};else DB.allocations.push({month,amounts});saveDB();closeModal('m-alloc');toast('大信封分配已儲存 ✓');renderEnvelopes();}
 function renderEnvelopes(){
